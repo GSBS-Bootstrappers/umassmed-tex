@@ -1,0 +1,732 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  THESIS DOCUMENT SUBSTYLE
+%%
+%%
+%%     Copyright Jianhong Ou
+%%     Modified from umthesis.sty by Research Computing Facility
+%%                                Department of Mathematics and Statistics,
+%%                                University of Massachusetts/Amherst
+%%	   Modified by Lana Ni - Dept of Neuroscience 
+%%								University of Massachusetts Medical School
+%%	   
+%%	   Modified by Chris MacKay - Dept of Medicine, August 2015
+%%								University of Massachusetts Medical School
+%%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%for times new roman font
+%\RequirePackage{times}
+
+%set the page layout
+\RequirePackage{geometry}
+\geometry{
+  body={6in, 8.5in},
+  left=1.5in,
+  top=1.5in
+}
+%set the head and foot.
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{\thepage}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\headheight}{15pt}
+
+%for insert pictures, picture should put in subfolder named as fig
+\RequirePackage{graphicx}
+\graphicspath{{./fig/}}
+
+% change the way captions are displayed beneath figures (Only display figure number)
+\renewcommand{\@makecaption}[2]{%
+\vskip\abovecaptionskip
+\hbox to \hsize{\hfil #1\hfil}%
+\vskip\belowcaptionskip}
+
+%% harvard.sty - harvard bibliography style Version 2.0.5
+%% Author: Peter Williams peterw@archsci.arch.su.edu.au
+%% Copyright: Peter Williams 1994
+\RequirePackage[abbr]{harvard}
+\citationstyle{dcu}
+\renewcommand{\bibname}{BIBLIOGRAPHY}
+
+%%Chapters with numbers will display "Chapter #" in Table of Contents
+\RequirePackage{subfigure}
+\RequirePackage[subfigure]{tocloft}
+\renewcommand{\cftchappresnum}{\chaptername~~}
+\renewcommand{\cftchapnumwidth}{6em}
+%%Figures with numbers will display "Figure #" in List of Figure
+\renewcommand{\cftfigpresnum}{\figurename~~}
+\renewcommand{\cftfignumwidth}{5.0em}
+%%Tables with numbers will display "Table #" in List of Table
+\renewcommand{\cfttabpresnum}{\tablename~~}
+\renewcommand{\cfttabnumwidth}{5.0em}
+%%Appendices with numbers will display "Appendix #" in Table of Contents
+\RequirePackage[titletoc]{appendix}
+
+%%set colorlinks
+\RequirePackage{hyperref}
+\hypersetup{colorlinks,
+        linkcolor=black,
+        filecolor=black,
+        urlcolor=blue,
+        citecolor=black}
+
+%%% For cross-reference figure, table and equation
+%
+\newcommand{\eref}[1]{(\ref{#1})}
+\newcommand{\sref}[1]{section~\ref{#1}}
+\newcommand{\fref}[1]{figure~\ref{#1}}
+\newcommand{\tref}[1]{table~\ref{#1}}
+\newcommand{\Eref}[1]{Equation (\ref{#1})}
+\newcommand{\Cref}[1]{Charpter~\ref{#1}}
+\newcommand{\Sref}[1]{Section~\ref{#1}}
+\newcommand{\Fref}[1]{Figure~\ref{#1}}
+\newcommand{\Tref}[1]{Table~\ref{#1}}
+\newcommand{\Aref}[1]{Appendix~\ref{#1}}
+
+\long\def\comment#1{}
+\comment{
+
+  Example of use:
+    \documentclass[letterpaper,oneside,11pt]{book}
+    \fontsize{11pt}
+		\usepackage{umthesis}
+    \begin{document}
+    \title{How to Write Theses\\
+            With Two Line Titles}
+    \author{Jianhong Ou}
+    \committeechair{Jianhong Ou}
+    \thesisadvisor{Jianhong Ou}
+    \firstreader{Jianhong Ou}
+    \secondreader{Jianhong Ou}
+    \thirdreader{Jianhong Ou}
+    \outsidereader{Jianhong Ou\\(Another Department)}
+		\headofdepartment{Anthony Carruthers,Ph.D.}
+		%\tablespagefalse
+		%\figurespagefalse
+		%\copyrightfalse
+		\beforepreface
+		\include{dedication}
+		\include{acknowledgments}
+		\include{abstract}
+		\afterpreface
+
+		\include{introduction}
+		\include{chapter1}
+		\include{chapter2}
+		\include{conclusion}
+		\envbib{thesis_bibliography}
+		\end{document}
+
+Documentation:
+    This style file modifies the standard report style to follow the
+    Graduate School's ``Typing Guidelines for Master's Theses and
+    Doctoral Dissertations''.
+    It sets the margins, interline spacing,  the figure
+    and table numbering style, and disallows page breaks at hyphens.
+
+    The \beforepreface command creates the title page, a copyright page
+    (optionally), and a signature page.  Then the user can put a
+    dedication, acknowledgments and an abstract using the \prefacesection
+    command.  The \afterpreface command then produces the tables of
+    contents, tables and figures, and sets things up to start
+    the main body (on arabic page 1).
+
+    The following commands can control what goes in the front matter
+    material:
+
+        \title{thesis title}
+        \author{author's name}
+        \dept{author's department}
+                - Mathematics and Statistics if omitted
+        \committeechair{the principal reader's name}
+        \thesisadvisor{the thesis advisor's name}
+        \firstreader{the first reader's name}
+        \secondreader{the second reader's name}
+        \thirdreader{the third reader's name}
+        \outsidereader{the outside reader's name}
+        \headofdepartment{the dean's name}
+        \submitdate{month year in which submitted to GPO}
+                - date LaTeX'd if omitted
+        \copyrightyear{year degree conferred (next year if submitted in Dec.)}
+                - year LaTeX'd (or next year, in December) if omitted
+        \copyrighttrue or \copyrightfalse
+                - produce or don't produce a copyright page (true by default)
+        \figurespagetrue or \figurespagefalse
+                - produce or don't produce a List of Figures page
+                  (true by default)
+        \tablespagetrue or \tablespagefalse
+                - produce or don't produce a List of Tables page
+                  (true by default)
+
+This style uses interline spacing that is 1.7 times normal, except
+in the figure and table environments where normal spacing is used.
+That can be changed by doing:
+    \renewcommand{\baselinestretch}{1.9}
+(or whatever you want instead of 1.9)
+Unfortunately, that command probably won't take effect unless it comes
+before the \begin{document} or after something like \small \normalsize.
+This has been incorporated into the environments
+ \beginsinglespace                  \begindoublepage
+  .............                       ...........
+ \endsinglespace                    \enddoublespace
+
+The example above shows the 12pt substyle being used.  This seems to give
+acceptable looking results, but it may be omitted to get smaller print.
+
+}
+
+\typeout{         }
+\typeout{Jianhong Ou for UMASSMED PHD THESIS template}
+\typeout{         }
+
+\makeatletter   % Make '@' a letter to allow access to private macros of
+                %   LaTeX and Plain TeX.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Temporary register
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%
+%%      DANGER and Double danger signs as the TeX manual defines them.
+%%      (commands \danger & \ddanger as on page 419, The TeX Book.)
+%
+%% First load nesessary symbols : (Metafont logo and spec. symbols)
+%
+%
+%%MetaFont (by Donald Knuth) and Adobe Type 1 (by Taco Hoekwater) versions of
+%%the font containing the odd symbols Knuth uses in his books. LaTeX support
+%%is available using the manfnt package
+%
+%%The authors are Donald E. Knuth and Taco Hoekwater.
+
+\font\manual=manfnt
+%
+
+%%%%%%
+%%  Section Titles
+%%  Altered so that the word `chapter', the chapter number, and title are all
+%%  set in \Large type.  The section headings are  \large.  This is
+%%  acceptable to the grad school, and makes the capters easier to find.
+%%%%%%
+\def\thechapter       {\arabic{chapter}}
+\def\thesection       {\thechapter.\arabic{section}}
+\def\thesubsection    {\thesection.\arabic{subsection}}
+
+\def\@chapapp{{\bf CHAPTER}}
+\def\@chapappclear{Chapter}
+
+%Heading for \chapter command
+\def\@makechapterhead#1{               % Heading for \chapter command
+%  \vspace*{4pt}                       % Space at top of text page.
+  \begin{center}
+    \ifnum \c@secnumdepth >\m@ne
+      \Large
+ \@chapapp{}\ {\bf\Roman{chapter}}:  % 'Chapter' and number (Large)
+    \fi
+    \Large \bf                              % VE
+    #1
+% Automatic uppercase leads to problems with ``small math''
+%    {\uppercase\expandafter{#1}}         % Title in uppercase
+  \end{center}\par
+  \nobreak                             % TeX penalty to prevent page break.
+  \vspace*{30pt}                          % Space between title and text.
+  }
+
+%Heading for \chapter* command
+\def\@makeschapterhead#1{              % Heading for \chapter* command
+%  \vspace*{30pt}                       % Space at top of page. (as above)
+  \begin{center}
+    \Large
+    #1
+% Automatic uppercase leads to problems with ``small math''
+%      {\uppercase\expandafter{#1}}
+  \end{center}\par
+  \nobreak                             % TeX penalty to prevent page break.
+  \vskip 30pt                          % Space between title and text.
+  }
+
+\def\chapter{\cleardoublepage   % Starts new page; makes it odd if two sided
+   \thispagestyle{empty}        % Page style of chapter page is 'empty' may
+                                % be changed to 'plain' if you do
+                                % want a number on the bottom of page.
+   \global\@topnum\z@           % Prevents figures from going at top of page.
+   \@afterindenttrue
+   \secdef\@chapter\@schapter}
+
+\def\@chapter[#1]#2{
+    \ifnum \c@secnumdepth >\m@ne
+      \refstepcounter{chapter}
+      \typeout{\@chapappclear\space\thechapter.}
+      \addcontentsline{toc}
+         {chapter}{\protect\numberline{\thechapter.}{#1}}
+%         {chapter}{\protect\numberline{\thechapter.}{\protect\uppercase\expandafter{#1}}}
+   \else
+      \addcontentsline{toc}{chapter}{{#1}}
+%      \addcontentsline{toc}{chapter}{{\protect\uppercase\expandafter{#1}}}
+   \fi
+   \chaptermark{#1}
+   \if@twocolumn                           % Tests for two-column mode.
+           \@topnewpage[\@makechapterhead{#2}]
+     \else \@makechapterhead{#2}
+           \@afterheading                  % Routine called after chapter and
+     \fi}                                  % section heading.
+
+
+\def\section{\ifnum \c@section=\z@         % If first section of a chapt.
+%% then separate it from the chapter heading by 6pt
+                \addtocontents{toc}{\protect\addvspace{.75\baselineskip}}
+%% otherwise :
+             \else
+                \ifnum \c@subsection>\z@
+                \addtocontents{toc}{\protect\addvspace{.75\baselineskip}}
+                \else
+                \addtocontents{toc}{\protect\addvspace{0pt}}
+                \fi
+             \fi
+             \@startsection{section}{1}
+                {\z@}{6.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+                { \large\bf}}              % Section title font
+                                           % VE: down from \Large
+
+\def\subsection{\ifnum \c@subsection=\z@
+                  \addtocontents{toc}{\protect\addvspace{.75\baselineskip}} %VE
+                \else
+                  \addtocontents{toc}{\protect\addvspace{0pt}} %VE
+                \fi
+                \@startsection{subsection}{2}
+                   {\z@}{3.25ex plus 1ex minus .2ex}{1.5ex plus
+.2ex}{\sl\bf}}  % \bf instead of \large VE
+\def\subsubsection{\@startsection{subsubsection}{3}
+                {\z@}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}{\sl}}
+\def\paragraph{\@startsection{paragraph}{4}
+                {\parindent}{\z@}{-1em}{\sl}}
+\def\subparagraph{\@startsection{subparagraph}{4}
+                {\parindent}{\z@}{-1em}{\sl}}
+
+\def\appendix{\par
+  \setcounter{chapter}{0}
+  \setcounter{section}{0}
+  \def\@chapapp{{\bf APPENDIX}}
+  \def\@chapappclear{APPENDICES}        %% MLS 032796
+  \def\thechapter{\Alph{chapter}}
+
+  \def\@chapter[##1]##2{                %%
+    \ifnum \c@secnumdepth >\m@ne        %%
+       \refstepcounter{chapter}            %%
+       \typeout{\@chapappclear}
+    \fi
+%    \addcontentsline{toc}{listintoc}{{\thechapter. ##1}}
+    \addcontentsline{toc}{chapter}{\protect\numberline{\thechapter.}{##1}}      %% MLS 032796
+    \chaptermark{##1}
+    \if@twocolumn                           % Tests for two-column mode.
+    \@topnewpage[\@makechapterhead{##2}]
+    \else \@makechapterhead{##2}
+    \@afterheading                        % Routine called after chapter and
+    \fi}                                  % section heading.
+  \def\@makechapterhead##1{               % Heading for \chapter command
+     \vspace*{30pt}                       % Space at top of text page.
+     \begin{center}
+       \ifnum \c@secnumdepth >\m@ne
+      \Large
+ \@chapapp{}\hspace{1.5em}{\bf\thechapter}\\  % 'Chapter' and number (Large)
+         \vskip 15pt                      % Space between number and title.
+       \fi
+       {##1}                             % Title in uppercase
+     \end{center}\par
+     \nobreak                             % TeX penalty to prevent page break.
+     \vskip 30pt                          % Space between title and text.
+     }
+
+}
+
+\def\soloappendix{\appendix
+  \def\@chapappclear{APPENDIX}           %%   MLS 032796
+  \def\thesection{\arabic{section}}      %%   Prevent chapter=appendix
+                                         %%   number from appearing in
+                                         %%   section number.
+
+   \def\@chapter[##1]##2{                %%   Single appendix so redefine
+     \ifnum \c@secnumdepth >\m@ne        %%     \@chapter not to put
+        \refstepcounter{chapter}         %%     appendix number in TOC
+        \typeout{\@chapappclear}
+        \ifnum\c@chapter=\@ne
+          \addtocontents{toc}{\protect\addvspace{10pt}}
+          \addtocontents{toc}
+            {{\protect\noindent\protect\uppercase\expandafter{\@chapappclear}}}
+        \else
+          \@warning{Should only be one appendix using \protect\soloappendix}
+        \fi
+        \addcontentsline{toc}{chapter}{\hspace{2ex}{##1}}
+     \else
+        \addcontentsline{toc}{chapter}{\hspace{2ex}{##1}}
+     \fi
+     \chaptermark{##1}
+     \if@twocolumn                           % Tests for two-column mode.
+           \@topnewpage[\@makechapterhead{##2}]
+     \else \@makechapterhead{##2}
+           \@afterheading                 % Routine called after chapter and
+     \fi}                                 % section heading.
+  \def\@makechapterhead##1{               % Heading for \chapter command
+     \vspace*{30pt}                       % Space at top of text page.
+     \begin{center}
+       \ifnum \c@secnumdepth >\m@ne
+	\Large
+         \@chapapp\\                      % 'Chapter', no number.
+         \vskip 15pt                      % Space between number and title.
+       \fi
+       {##1}
+%    {\uppercase\expandafter{##1}}        % Title in uppercase
+%was: \sc ##1                            % Title.
+     \end{center}\par
+     \nobreak                             % TeX penalty to prevent page break.
+     \vskip 30pt                          % Space between title and text.
+     }}
+
+
+
+%    ****************************************
+%    *         OTHER ENVIRONMENTS           *
+%    ****************************************
+%
+%
+% THEOREM
+% \@begintheorem ... \@endtheorem are the commands executed at the
+% beginning and end of a (user-defined) theorem-like environment.
+% Except \@opargbegintheorem is executed when an optional argument is
+% given.  Cf. LATEX.TEX.  The difference to the LaTeX standard is that
+% we don't want to use slanted (italic?) font.
+
+ \def\@begintheorem#1#2{\trivlist \item[\hskip \labelsep{\bf #1\ #2}]}
+ \def\@opargbegintheorem#1#2#3{\trivlist
+       \item[\hskip \labelsep{\bf #1\ #2\ (#3)}]}
+ \def\@endtheorem{\endtrivlist}
+
+
+%%%%%% ``Spacing''
+%%
+%%  Double: Use 1.7 times the normal baseline-to-baseline skip.
+%%  Single: Use 1.0 times the normal baseline-to-baseline skip.
+%%  Table : Use 0.8 times the normal baseline-to-baseline skip, for
+%%          table of contents, list of figures, list of tables.
+%%
+%%  (Is activated either by \begin{document} or by a change of sizes
+%%   (e.g. \small\normalsize), which has been incorporated into the
+%%   \begin...space commands.)
+%%
+%%  We need single spacing for figure/table cations, footnotes and
+%%  for the bibliography.
+%%  The table of contents looks better with even less spacing...
+
+%   \def\baselinestretch{1.7}\@normalsize       % TeX format
+%   \renewcommand{\baselinestretch}{1.7}        % LaTeX format
+
+\def\doublespace{\renewcommand{\baselinestretch}{1.7}}
+\def\tablespace{\renewcommand{\baselinestretch}{0.8}}
+\def\singlespace{\renewcommand{\baselinestretch}{1.0}}
+%
+
+\def\begindoublespace{\doublespace\small\normalsize}
+\def\enddoublespace{}
+\def\beginsinglespace{\singlespace\small\normalsize}
+\def\endsinglespace{}
+\def\begintablespace{\tablespace\small\normalsize}
+\def\endtablespace{}
+%
+
+% Switch to double spacing now.
+\doublespace
+
+
+
+%%  Bibliography -- the (incomprehesible) core is identical to
+%%  'report.sty'. Two major changes are made in the lines right at the
+%%  top:
+%%  1) craft the ``Bibliography'' entry in the table of contents
+%%     (\addtocontents lines)
+%%  2) switch to single spacing
+%%
+
+
+\def\evnbib#1{
+	\cleardoublepage
+  \beginsinglespace        %% single spacing (needed for Bibliography)
+  \small
+  \bibliography{#1}
+	\bibliographystyle{mykluwer}
+	\addcontentsline{toc}{chapter}{{BIBLIOGRAPHY}}
+}
+
+%%%%%%
+%%  Variables for department name, committee members etc. if not
+%%  already defined (e.g. \author \title in 'report.sty').
+%
+%   Default settings can be made in here, such as
+%        \def\@dept{Mathematics and Statistics}
+%   below. Can be overriden in .tex files by \dept{Other Dept}
+%
+%   Definitions particular to your thesis should be made in the
+%   preamble of the main .tex document in the following way:
+%        \committeechair{David R.\ Hayes}
+
+% Additional variables needed
+\def\dept#1{\gdef\@dept{#1}}
+\def\headofdepartment#1{\gdef\@headofdepartment{#1}}
+\def\thesisadvisor#1{\gdef\@thesisadvisor{#1}}
+\def\committeechair#1{\gdef\@committeechair{#1}}
+\def\firstreader#1{\gdef\@firstreader{#1}}
+\def\secondreader#1{\gdef\@secondreader{#1}}
+\def\thirdreader#1{\gdef\@thirdreader{#1}}
+\def\outsidereader#1{\gdef\@outsidereader{#1}}
+\def\submitdate#1{\gdef\@submitdate{#1}}
+\def\copyrightyear#1{\gdef\@copyrightyear{#1}}
+\def\school#1{\gdef\@school{#1}}
+\def\depaddr#1{\gdef\@depaddr{#1}}
+
+% Those are the things you should define in your thesis:
+\def\@title{}
+\def\@author{}
+\def\@dept{NEUROSCIENCE}         % default
+\def\@headofdepartment{}
+\def\@committeechair{}
+\def\@firstreader{}
+\def\@secondreader{}
+\def\@thirdreader{}
+\def\@outsidereader{}
+\def\@thesisadvisor{}
+\def\@school{the Graduate School of Biomedical Sciences} %default
+\def\@depaddr{University of Massachusetts Graduate School of Biomedical Sciences, Worcester, MA}
+
+% If \copyrightdate are not defined in .tex files, LaTeX
+% computes them from \today. For UMass, this should be either
+% February 19??  or September 19?? or May 19??  (nothing else)
+\ifnum\month=12
+    \@tempcnta=\year \advance\@tempcnta by 1
+    \edef\@copyrightyear{\number\the\@tempcnta}
+\else
+    \def\@copyrightyear{\number\the\year}
+\fi
+
+
+% Define new conditional to check for copyright, tables, figures.
+% Creates control sequences \...true  \...false ....
+\newif\ifcopyright
+\newif\iffigurespage
+\newif\iftablespage
+
+% Set defaults:
+\copyrighttrue     % We always want a copright page. (see \copyrightpage)
+\figurespagetrue  % You have to put \figurespagetrue in your document
+\tablespagetrue   % before the command \afterpreface if you want a
+                   % list of figures. Dito for tables.
+%%%%
+
+
+%%%%%   Preliminary pages : brief listing of implemented rules:
+% First pages should
+%
+% 1) not have page numbers, and should not be listed in the Table of Contents
+%        [title,copyright,signature], or
+%
+% 2) have roman page numbers, and BE listed in the Table of Contents
+%        [Acknowledgements & Abstract]
+%
+% After that, we use arabic numerals:
+%
+%%%%%%%
+%%      Title page
+%%%%%%%%%
+
+\def\titlep{%
+        \thispagestyle{empty}%
+        \null\vskip1in%
+        \begin{center}
+                {\LARGE\bf\uppercase\expandafter{\@title}}
+        \end{center}
+        \vfill
+        \begin{center}
+                 A Dissertation Presented\\
+                        \hfill \\
+                            by\\
+                        \hfill \\
+                     \expandafter{\@author}  % must be uppercase
+        \end{center}
+        \vfill
+        \begin{center}
+                Submitted to the Faculty of the\\
+								\@depaddr\\
+								in partial fulfillment of the requirements for the degree of \\
+                \hfill \\
+                DOCTOR OF PHILOSOPHY \\
+                \hfill \\
+								\@submitdate \\
+                \hfill \\
+%                Department of \@dept \\
+                \@dept \\
+        \end{center}\vskip.5in\newpage}
+
+%%%%%%%
+%%      Copyright page (if you don't want to have one, put command
+%                       \copyrightfalse in your .tex file before you
+%                       call \beforepreface).
+%
+
+\def\copyrightpage{%
+        \thispagestyle{empty}%
+        \null\vfill
+        \begin{center}
+                \copyright\ Copyright by
+                \rm{\@author} \@copyrightyear\\
+                All Rights Reserved
+        \end{center}
+        \vfill\newpage}
+
+%%%%%%%
+%%      Signature page   (may give a list of warnings on compilation
+%                         which are annoying but harmless)
+%
+\def\signaturepage{%
+        \thispagestyle{empty}%
+\begin{center}
+                {\normalsize\bf\uppercase\expandafter{\@title}}\\
+\footnotesize
+                 A Dissertation Presented\\
+                            by\\
+                     \uppercase\expandafter{\@author}\\
+        The signatures of the Dissertation Defense Committee signifies \\
+        completion and approval as to style and content of the Dissertation\\
+        \hfill \\
+        \shortstack[c]{\vrule width 4in height 0.4pt \\
+                        \@thesisadvisor, Thesis Advisor} \\
+        \hfill \\
+        \shortstack[c]{\vrule width 4in height 0.4pt \\
+                        \@firstreader, Member of Committee} \\
+        \hfill \\
+        \shortstack[c]{\vrule width 4in height 0.4pt \\
+                        \@secondreader, Member of Committee} \\
+        \hfill \\
+        \shortstack[c]{\vrule width 4in height 0.4pt \\
+                        \@thirdreader, Member of Committee} \\
+        \hfill \\
+        \shortstack[c]{\vrule width 4in height 0.4pt \\
+                        \@outsidereader, Member of Committee} \\
+        The signature of the Chair of the Committee signifies that the written dissertation meets\\
+        the requirements of the Dissertation Committee\\
+        \hfill\\
+        \shortstack[c]{\vrule width 4in height 0.4pt \\
+        								\@committeechair, Chair of Committee} \\
+        The signature of the Dean of \@school\ signifies\\
+        that the student has met all graduation requirements of the school.\\
+        \hfill\\
+        \shortstack[c]{\vrule width 5in height 0.4pt\\
+                        \@headofdepartment, Dean of \@school } \\
+        \@dept\\
+        \today
+\end{center}
+\clearpage
+        }
+
+\def\beforepreface{             % This makes the title, copyright and
+        \pagenumbering{roman}   % signature pages.
+        \thispagestyle{empty}
+        \titlep
+        \ifcopyright\copyrightpage\fi
+        \brokenpenalty=100      % To prevent warnings about underfull
+                                % \vbox's.
+        \signaturepage
+}
+
+\newenvironment{dedication}
+    {\vspace*{80pt}\begin{quotation}}
+    {\par\end{quotation}}
+
+\def\prefacesection#1{%         %(replaced 'chapter'
+        \thispagestyle{plain}%  % by 'listintoc'and
+        \chapter*{\protect\uppercase{#1}}
+				\addcontentsline{toc}{chapter}{\texorpdfstring{\protect\uppercase{#1}}{#1}}
+        }
+
+%%%%%%%
+%%      ``After preface''
+%       Makes a Table of Contents, and List(s) of
+%       Tables (if command \tablespagetrue in .tex file),
+%       and/or of Figures (if \figurespagetrue in .tex file)
+%       Observe that we briefly switch to single spacing for the table
+%       of contents.
+%
+
+\def\afterpreface{\newpage
+        \begintablespace
+        \tableofcontents
+        \newpage
+% These lines make a List of Tables page after the Table of Contents
+% page, iff you include the command '\tablespagetrue' in your '.tex'
+% file.
+
+        \iftablespage
+                {
+%                \addtocontents{lot}{\protect Table \hfill Page
+%                                    \addvspace{\baselineskip}}  %% MLS 041896
+                \listoftables
+                }
+                \newpage
+        \fi
+% These lines make a List of Figures page after the Table of Contents
+% page, iff you include the command '\figurespagetrue' in your '.tex'
+% file.
+
+        \iffigurespage
+
+                {
+%                \addtocontents{lof}{\protect Figure \hfill Page
+%                                    \addvspace{\baselineskip}}
+                \listoffigures
+                }
+                \newpage
+        \fi
+% 'figure' ends here.
+
+%% Finally, we want to use double spacing
+
+        \endtablespace
+        \begindoublespace
+
+%%%%%   Initialization of pagestyle
+% See above for a definition of these different Page Styles ;
+% can be changed to \pagestyle{thesis} if you prefer page numbers
+% in the top right corner. You can also check out the preliminary
+% page styles : 'preliminary' or 'preliminarydraft' .
+
+%       \pagestyle{thesis}              %   Page # on top
+%       \pagestyle{draft}               %   Page # on top + 'DRAFT'
+%       \pagestyle{preliminary}         %   Page # at bottom
+%       \pagestyle{draftpreliminary}    %   Page # at bottom + 'DRAFT'
+
+% I think one could actually move these \pagestyle definitions
+% into the .tex file itself! [One can!]
+% If one does not define any of these, the default appears to be
+% preliminary which I think is the best anyway.
+%
+% Finally, switch pagenumbering to arabic and close definition of
+% \afterpreface ; the first chapter may begin.
+        \pagenumbering{arabic}} %  Here ends \afterpreface.
+
+
+%%%%%%
+%%  Finally, set penalties for breaking lines, pages, backs ...
+%
+
+% Disallow page breaks at hyphens (this will give some underfull vbox's,
+% so an alternative is to use \brokenpenalty=100 and manually search
+% for and fix such page breaks)%
+
+\brokenpenalty=20000
+%
+
+\makeatother    %   Make '@' special again to deny access to private
+                %   macros of LaTeX and Plain TeX.
