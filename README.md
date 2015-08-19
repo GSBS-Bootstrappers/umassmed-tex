@@ -8,12 +8,13 @@ LaTex Template for UMass Medical School GSBS Thesis Preparation
 
 The quickest and easiest way to get started it to go to [overleaf.com](http://overlead.com) and load the UMass Template...
 
+Here is an [example](https://www.overleaf.com/3094199nnwpnb)
+
 ### On your own computer
 
 #### Mac OSX
 
 1. Install MacTeX
-
 
 #### Windows
 
