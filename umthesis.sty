@@ -6,12 +6,12 @@
 %%     Modified from umthesis.sty by Research Computing Facility
 %%                                Department of Mathematics and Statistics,
 %%                                University of Massachusetts/Amherst
-%%	   Modified by Lana Ni - Dept of Neuroscience 
-%%								University of Massachusetts Medical School
-%%	   
-%%	   Modified by Chris MacKay - Dept of Medicine, August 2015
+%%	   Modified by Lana Ni - Dept of Neuroscience
 %%								University of Massachusetts Medical School
 %%
+%%	   Modified by Chris MacKay - Dept of Medicine, August 2015
+%%								University of Massachusetts Medical School
+%%								github.com/GSBS-Bootstrappers/umassmed-tex
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -41,11 +41,15 @@
 \RequirePackage{graphicx}
 \graphicspath{{./fig/}}
 
+\RequirePackage{afterpage}
+
 % change the way captions are displayed beneath figures (Only display figure number)
-\renewcommand{\@makecaption}[2]{%
-\vskip\abovecaptionskip
-\hbox to \hsize{\hfil #1\hfil}%
-\vskip\belowcaptionskip}
+% NOTE: as of 2016-01-15 the captions can be displayed on the same page as the image if desired
+%   so this renewcommand is unnecessary...
+% \renewcommand{\@makecaption}[2]{%
+% \vskip\abovecaptionskip
+% \hbox to \hsize{\hfil #1\hfil}%
+% \vskip\belowcaptionskip}
 
 %% harvard.sty - harvard bibliography style Version 2.0.5
 %% Author: Peter Williams peterw@archsci.arch.su.edu.au
@@ -83,7 +87,7 @@
 \newcommand{\fref}[1]{figure~\ref{#1}}
 \newcommand{\tref}[1]{table~\ref{#1}}
 \newcommand{\Eref}[1]{Equation (\ref{#1})}
-\newcommand{\Cref}[1]{Charpter~\ref{#1}}
+\newcommand{\Cref}[1]{Chapter~\ref{#1}}
 \newcommand{\Sref}[1]{Section~\ref{#1}}
 \newcommand{\Fref}[1]{Figure~\ref{#1}}
 \newcommand{\Tref}[1]{Table~\ref{#1}}
@@ -142,7 +146,7 @@ Documentation:
 
         \title{thesis title}
         \author{author's name}
-        \dept{author's department}
+        \gradprogram{author's department}
                 - Mathematics and Statistics if omitted
         \committeechair{the principal reader's name}
         \thesisadvisor{the thesis advisor's name}
@@ -252,7 +256,7 @@ acceptable looking results, but it may be omitted to get smaller print.
   }
 
 \def\chapter{\cleardoublepage   % Starts new page; makes it odd if two sided
-   \thispagestyle{empty}        % Page style of chapter page is 'empty' may
+   \thispagestyle{fancy}        % Page style of chapter page is 'empty' may
                                 % be changed to 'plain' if you do
                                 % want a number on the bottom of page.
    \global\@topnum\z@           % Prevents figures from going at top of page.
@@ -419,7 +423,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 %%   (e.g. \small\normalsize), which has been incorporated into the
 %%   \begin...space commands.)
 %%
-%%  We need single spacing for figure/table cations, footnotes and
+%%  We need single spacing for figure/table captions, footnotes and
 %%  for the bibliography.
 %%  The table of contents looks better with even less spacing...
 
@@ -467,21 +471,22 @@ acceptable looking results, but it may be omitted to get smaller print.
 %%  already defined (e.g. \author \title in 'report.sty').
 %
 %   Default settings can be made in here, such as
-%        \def\@dept{Mathematics and Statistics}
-%   below. Can be overriden in .tex files by \dept{Other Dept}
+%        \def\@gradprogram{Mathematics and Statistics}
+%   below. Can be overriden in .tex files by \gradprogram{Other Dept}
 %
 %   Definitions particular to your thesis should be made in the
 %   preamble of the main .tex document in the following way:
 %        \committeechair{David R.\ Hayes}
 
 % Additional variables needed
-\def\dept#1{\gdef\@dept{#1}}
+\def\gradprogram#1{\gdef\@gradprogram{#1}}
 \def\headofdepartment#1{\gdef\@headofdepartment{#1}}
 \def\thesisadvisor#1{\gdef\@thesisadvisor{#1}}
 \def\committeechair#1{\gdef\@committeechair{#1}}
 \def\firstreader#1{\gdef\@firstreader{#1}}
 \def\secondreader#1{\gdef\@secondreader{#1}}
 \def\thirdreader#1{\gdef\@thirdreader{#1}}
+\def\fourthreader#1{\gdef\@fourthreader{#1}}
 \def\outsidereader#1{\gdef\@outsidereader{#1}}
 \def\submitdate#1{\gdef\@submitdate{#1}}
 \def\copyrightyear#1{\gdef\@copyrightyear{#1}}
@@ -491,7 +496,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 % Those are the things you should define in your thesis:
 \def\@title{}
 \def\@author{}
-\def\@dept{NEUROSCIENCE}         % default
+\def\@gradprogram{NEUROSCIENCE}         % default
 \def\@headofdepartment{}
 \def\@committeechair{}
 \def\@firstreader{}
@@ -542,9 +547,9 @@ acceptable looking results, but it may be omitted to get smaller print.
 %%      Title page
 %%%%%%%%%
 
-\def\titlep{%
-        \thispagestyle{empty}%
-        \null\vskip1in%
+\def\titlep{
+        \thispagestyle{empty}
+        \null\vskip1in
         \begin{center}
                 {\LARGE\bf\uppercase\expandafter{\@title}}
         \end{center}
@@ -558,17 +563,17 @@ acceptable looking results, but it may be omitted to get smaller print.
         \end{center}
         \vfill
         \begin{center}
-                Submitted to the Faculty of the\\
-								\@depaddr\\
-								in partial fulfillment of the requirements for the degree of \\
-                \hfill \\
-                DOCTOR OF PHILOSOPHY \\
-                \hfill \\
-								\@submitdate \\
-                \hfill \\
-%                Department of \@dept \\
-                \@dept \\
-        \end{center}\vskip.5in\newpage}
+        	Submitted to the Faculty of the\\
+			\@depaddr\\
+			in partial fulfillment of the requirements for the degree of \\
+            \hfill \\
+            DOCTOR OF PHILOSOPHY \\
+            \hfill \\
+			\@submitdate \\
+            \hfill \\
+        	\@gradprogram \\
+        \end{center}\vskip.5in\newpage
+}
 
 %%%%%%%
 %%      Copyright page (if you don't want to have one, put command
@@ -597,7 +602,8 @@ acceptable looking results, but it may be omitted to get smaller print.
 \footnotesize
                  A Dissertation Presented\\
                             by\\
-                     \uppercase\expandafter{\@author}\\
+                            %\uppercase\expandafter{\@author}\\
+                            \@author\\
         The signatures of the Dissertation Defense Committee signifies \\
         completion and approval as to style and content of the Dissertation\\
         \hfill \\
@@ -612,6 +618,11 @@ acceptable looking results, but it may be omitted to get smaller print.
         \hfill \\
         \shortstack[c]{\vrule width 4in height 0.4pt \\
                         \@thirdreader, Member of Committee} \\
+        \ifdefined\@fourthreader
+            \hfill \\
+            \shortstack[c]{\vrule width 4in height 0.4pt \\
+                            \@fourthreader, Member of Committee} \\
+        \fi
         \hfill \\
         \shortstack[c]{\vrule width 4in height 0.4pt \\
                         \@outsidereader, Member of Committee} \\
@@ -625,8 +636,8 @@ acceptable looking results, but it may be omitted to get smaller print.
         \hfill\\
         \shortstack[c]{\vrule width 5in height 0.4pt\\
                         \@headofdepartment, Dean of \@school } \\
-        \@dept\\
-        \today
+        \@gradprogram\\
+        \@submitdate
 \end{center}
 \clearpage
         }
@@ -647,7 +658,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 
 \def\prefacesection#1{%         %(replaced 'chapter'
         \thispagestyle{plain}%  % by 'listintoc'and
-        \chapter*{\protect\uppercase{#1}}
+        \chapter*{\bf \protect\uppercase{#1}}
 				\addcontentsline{toc}{chapter}{\texorpdfstring{\protect\uppercase{#1}}{#1}}
         }
 

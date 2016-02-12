@@ -1,12 +1,12 @@
 # umassmed-tex
 
-LaTex Template for UMass Medical School GSBS Thesis Preparation
+LaTeX Template for UMass Medical School GSBS Thesis Preparation
 
 ## Getting Started Writing Your Thesis
 
 ### On the Internet
 
-The quickest and easiest way to get started it to go to [overleaf.com](http://overlead.com) and load the UMass Template...
+The quickest and easiest way to get started it to go to [overleaf.com](http://overleaf.com) and load the UMass Template...
 
 Here is an [example](https://www.overleaf.com/3094199nnwpnb)
 
@@ -49,3 +49,26 @@ is simple and strait forward, and not buggy or slow.
 This is just a starting point, but we hope to gradually and incrementally improve and update this template and the instructions that go with it, so to help ourselves and future students easily and un-stressfully create a great looking, rule-conforming thesis.
 
 If you would like to suggest new styles, features, elements etc. please open a new issue on the [issue page](https://github.com/crmackay/umassmed-tex/issues), or add you voice via comment to any related issues. You are also more than welcome to fork this repository, make any changes you want, and open up a pull request (see details on [gitflow here]())
+
+## Hows Tos:
+
+### Getting Started
+
+#### Setting up your files
+
+#### Compiling your `pdf`
+
+### Adding **bold** or *italic* text
+
+### Adding a figure
+
+### Adding a table
+
+### Adding a reference/citation
+
+#### Managing your references
+
+- BibTeX
+- Papers, Mendeley, zotero, endNote
+
+### Contributing back changes and improvements to the template
