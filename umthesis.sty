@@ -672,6 +672,9 @@ acceptable looking results, but it may be omitted to get smaller print.
                 {
 %                \addtocontents{lot}{\protect Table \hfill Page
 %                                    \addvspace{\baselineskip}}  %% MLS 041896
+		
+		% adds the lisst of tables to the table of contents
+		\addcontentsline{toc}{chapter}{\listtablename}
                 \listoftables
                 }
                 \newpage
@@ -685,6 +688,9 @@ acceptable looking results, but it may be omitted to get smaller print.
                 {
 %                \addtocontents{lof}{\protect Figure \hfill Page
 %                                    \addvspace{\baselineskip}}
+
+		% adds the list of figures to the table of contents
+                \addcontentsline{toc}{chapter}{\listfigurename}
                 \listoffigures
                 }
                 \newpage
