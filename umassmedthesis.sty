@@ -246,7 +246,7 @@ acceptable looking results, but it may be omitted to get smaller print.
       \Large
  \@chapapp{}\ {\bf\Roman{chapter}}:  % 'Chapter' and number (Large)
     \fi
-    \Large \bf                              % VE
+    \Large \bf                             % VE
     #1
 % Automatic uppercase leads to problems with ``small math''
 %    {\uppercase\expandafter{#1}}         % Title in uppercase
@@ -269,7 +269,7 @@ acceptable looking results, but it may be omitted to get smaller print.
   }
 
 \def\chapter{\cleardoublepage   % Starts new page; makes it odd if two sided
-   \thispagestyle{empty}        % Page style of chapter page is 'empty' may
+   \thispagestyle{fancy}        % Page style of chapter page is 'empty' may
                                 % be changed to 'plain' if you do
                                 % want a number on the bottom of page.
    \global\@topnum\z@           % Prevents figures from going at top of page.
@@ -672,7 +672,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 
 \def\prefacesection#1{%         %(replaced 'chapter'
         \thispagestyle{plain}%  % by 'listintoc'and
-        \chapter*{\protect\uppercase{#1}}
+        \chapter*{\bf \protect\uppercase{#1}}
 				\addcontentsline{toc}{chapter}{\texorpdfstring{\protect\uppercase{#1}}{#1}}
         }
 
