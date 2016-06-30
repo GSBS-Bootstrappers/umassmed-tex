@@ -6,9 +6,9 @@
 %%     Modified from umthesis.sty by Research Computing Facility
 %%                                Department of Mathematics and Statistics,
 %%                                University of Massachusetts/Amherst
-%%	   Modified by Lana Ni - Dept of Neuroscience 
+%%	   Modified by Lana Ni - Dept of Neuroscience
 %%								University of Massachusetts Medical School
-%%	   
+%%
 %%	   Modified by Chris MacKay - Dept of Medicine, August 2015
 %%								University of Massachusetts Medical School
 %%
@@ -41,15 +41,28 @@
 \RequirePackage{graphicx}
 \graphicspath{{./fig/}}
 
+\RequirePackage{afterpage}
+
 % change the way captions are displayed beneath figures (Only display figure number)
-\renewcommand{\@makecaption}[2]{%
-\vskip\abovecaptionskip
-\hbox to \hsize{\hfil #1\hfil}%
-\vskip\belowcaptionskip}
+% NOTE: as of 2016-01-15 the captions can be displayed on the same page as the image if desired
+%   so this renewcommand is unnecessary...
+%%\renewcommand{\@makecaption}[2]{%
+%%\vskip\abovecaptionskip
+%%\hbox to \hsize{\hfil #1\hfil}%
+%%\vskip\belowcaptionskip}
+
+
+% this redefines the \figure and \table command to automatically include a \newpage command
+\let\oldfigure\figure
+\renewcommand{\figure}{\newpage\oldfigure}
+
+\let\oldtable\table
+\renewcommand{\table}{\newpage\oldtable}
 
 %% harvard.sty - harvard bibliography style Version 2.0.5
 %% Author: Peter Williams peterw@archsci.arch.su.edu.au
 %% Copyright: Peter Williams 1994
+%% TODO: modernize this...or something
 \RequirePackage[abbr]{harvard}
 \citationstyle{dcu}
 \renewcommand{\bibname}{BIBLIOGRAPHY}
@@ -57,14 +70,18 @@
 %%Chapters with numbers will display "Chapter #" in Table of Contents
 \RequirePackage{subfigure}
 \RequirePackage[subfigure]{tocloft}
-\renewcommand{\cftchappresnum}{\chaptername~~}
+\renewcommand{\cftchappresnum}{\chaptername~}
 \renewcommand{\cftchapnumwidth}{6em}
-%%Figures with numbers will display "Figure #" in List of Figure
-\renewcommand{\cftfigpresnum}{\figurename~~}
-\renewcommand{\cftfignumwidth}{5.0em}
-%%Tables with numbers will display "Table #" in List of Table
-\renewcommand{\cfttabpresnum}{\tablename~~}
-\renewcommand{\cfttabnumwidth}{5.0em}
+%% List of figures format changes
+	%%Figures with numbers will display "Figure #" in List of Figure
+	\renewcommand{\cftfigpresnum}{\figurename~~}
+	\renewcommand{\cftfignumwidth}{5.2em}
+	\setlength{\cftbeforefigskip}{0.5em}		% sets vertical space between entries in lof
+%% list of tables format changes
+	%%Tables with numbers will display "Table #" in List of Table
+	\renewcommand{\cfttabpresnum}{\tablename~~}
+	\renewcommand{\cfttabnumwidth}{5.0em}			
+	\setlength{\cftbeforetabskip}{0.5em}		% sets verical space between entries in lot
 %%Appendices with numbers will display "Appendix #" in Table of Contents
 \RequirePackage[titletoc]{appendix}
 
@@ -83,7 +100,7 @@
 \newcommand{\fref}[1]{figure~\ref{#1}}
 \newcommand{\tref}[1]{table~\ref{#1}}
 \newcommand{\Eref}[1]{Equation (\ref{#1})}
-\newcommand{\Cref}[1]{Charpter~\ref{#1}}
+\newcommand{\Cref}[1]{Chapter~\ref{#1}}
 \newcommand{\Sref}[1]{Section~\ref{#1}}
 \newcommand{\Fref}[1]{Figure~\ref{#1}}
 \newcommand{\Tref}[1]{Table~\ref{#1}}
@@ -279,14 +296,14 @@ acceptable looking results, but it may be omitted to get smaller print.
 
 
 \def\section{\ifnum \c@section=\z@         % If first section of a chapt.
-%% then separate it from the chapter heading by 6pt
-                \addtocontents{toc}{\protect\addvspace{.75\baselineskip}}
+%% then separate it from the chapter heading by x-pt
+                \addtocontents{toc}{\protect\addvspace{.2\baselineskip}}
 %% otherwise :
              \else
                 \ifnum \c@subsection>\z@
-                \addtocontents{toc}{\protect\addvspace{.75\baselineskip}}
+                \addtocontents{toc}{\protect\addvspace{.2\baselineskip}}
                 \else
-                \addtocontents{toc}{\protect\addvspace{0pt}}
+                \addtocontents{toc}{\protect\addvspace{.2\baselineskip}}
                 \fi
              \fi
              \@startsection{section}{1}
@@ -295,9 +312,9 @@ acceptable looking results, but it may be omitted to get smaller print.
                                            % VE: down from \Large
 
 \def\subsection{\ifnum \c@subsection=\z@
-                  \addtocontents{toc}{\protect\addvspace{.75\baselineskip}} %VE
+                  \addtocontents{toc}{\protect\addvspace{.2\baselineskip}} %VE
                 \else
-                  \addtocontents{toc}{\protect\addvspace{0pt}} %VE
+                  \addtocontents{toc}{\protect\addvspace{.2\baselineskip}} %VE
                 \fi
                 \@startsection{subsection}{2}
                    {\z@}{3.25ex plus 1ex minus .2ex}{1.5ex plus
@@ -419,7 +436,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 %%   (e.g. \small\normalsize), which has been incorporated into the
 %%   \begin...space commands.)
 %%
-%%  We need single spacing for figure/table cations, footnotes and
+%%  We need single spacing for figure/table captions, footnotes and
 %%  for the bibliography.
 %%  The table of contents looks better with even less spacing...
 
@@ -475,13 +492,14 @@ acceptable looking results, but it may be omitted to get smaller print.
 %        \committeechair{David R.\ Hayes}
 
 % Additional variables needed
-\def\dept#1{\gdef\@dept{#1}}
+\def\gradprogram#1{\gdef\@gradprogram{#1}}
 \def\headofdepartment#1{\gdef\@headofdepartment{#1}}
 \def\thesisadvisor#1{\gdef\@thesisadvisor{#1}}
 \def\committeechair#1{\gdef\@committeechair{#1}}
 \def\firstreader#1{\gdef\@firstreader{#1}}
 \def\secondreader#1{\gdef\@secondreader{#1}}
 \def\thirdreader#1{\gdef\@thirdreader{#1}}
+\def\fourthreader#1{\gdef\@fourthreader{#1}}
 \def\outsidereader#1{\gdef\@outsidereader{#1}}
 \def\submitdate#1{\gdef\@submitdate{#1}}
 \def\copyrightyear#1{\gdef\@copyrightyear{#1}}
@@ -491,7 +509,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 % Those are the things you should define in your thesis:
 \def\@title{}
 \def\@author{}
-\def\@dept{NEUROSCIENCE}         % default
+\def\@gradprogram{Interdisciplinary Graduate Program}         % default
 \def\@headofdepartment{}
 \def\@committeechair{}
 \def\@firstreader{}
@@ -542,32 +560,31 @@ acceptable looking results, but it may be omitted to get smaller print.
 %%      Title page
 %%%%%%%%%
 
-\def\titlep{%
+\def\titlep{
         \thispagestyle{empty}%
-        \null\vskip1in%
+        \null\vskip0.3in%
         \begin{center}
                 {\LARGE\bf\uppercase\expandafter{\@title}}
         \end{center}
         \vfill
         \begin{center}
-                 A Dissertation Presented\\
-                        \hfill \\
-                            by\\
-                        \hfill \\
-                     \expandafter{\@author}  % must be uppercase
+        	A Dissertation Presented\\
+            \hfill \\
+            by\\
+            \hfill \\
+            \expandafter{\@author}  % must be uppercase
         \end{center}
         \vfill
         \begin{center}
-                Submitted to the Faculty of the\\
-								\@depaddr\\
-								in partial fulfillment of the requirements for the degree of \\
-                \hfill \\
-                DOCTOR OF PHILOSOPHY \\
-                \hfill \\
-								\@submitdate \\
-                \hfill \\
-%                Department of \@dept \\
-                \@dept \\
+        	Submitted to the Faculty of the \\
+			\@depaddr \\
+			in partial fulfillment of the requirements for the degree of \\
+            \hfill \\
+            DOCTOR OF PHILOSOPHY \\
+            \hfill \\
+			\@submitdate \\
+            \hfill \\
+            \@gradprogram \\
         \end{center}\vskip.5in\newpage}
 
 %%%%%%%
@@ -576,13 +593,15 @@ acceptable looking results, but it may be omitted to get smaller print.
 %                       call \beforepreface).
 %
 
-\def\copyrightpage{%
-        \thispagestyle{empty}%
+\def\copyrightpage{
+        \thispagestyle{empty}
         \null\vfill
         \begin{center}
                 \copyright\ Copyright by
                 \rm{\@author} \@copyrightyear\\
-                All Rights Reserved
+                All Rights Reserved\\
+                All material is available for sharing and adaptation according to the Creative Commons Attribution-ShareAlike 4.0 International License\\
+                See the the license file associated with source code for terms of its use
         \end{center}
         \vfill\newpage}
 
@@ -590,14 +609,15 @@ acceptable looking results, but it may be omitted to get smaller print.
 %%      Signature page   (may give a list of warnings on compilation
 %                         which are annoying but harmless)
 %
-\def\signaturepage{%
-        \thispagestyle{empty}%
+\def\signaturepage{
+        \thispagestyle{empty}
 \begin{center}
                 {\normalsize\bf\uppercase\expandafter{\@title}}\\
 \footnotesize
                  A Dissertation Presented\\
                             by\\
-                     \uppercase\expandafter{\@author}\\
+                            %\uppercase\expandafter{\@author}\\
+                            \@author\\
         The signatures of the Dissertation Defense Committee signifies \\
         completion and approval as to style and content of the Dissertation\\
         \hfill \\
@@ -612,6 +632,11 @@ acceptable looking results, but it may be omitted to get smaller print.
         \hfill \\
         \shortstack[c]{\vrule width 4in height 0.4pt \\
                         \@thirdreader, Member of Committee} \\
+        \ifdefined\@fourthreader
+            \hfill \\
+            \shortstack[c]{\vrule width 4in height 0.4pt \\
+                            \@fourthreader, Member of Committee} \\
+        \fi
         \hfill \\
         \shortstack[c]{\vrule width 4in height 0.4pt \\
                         \@outsidereader, Member of Committee} \\
@@ -625,8 +650,8 @@ acceptable looking results, but it may be omitted to get smaller print.
         \hfill\\
         \shortstack[c]{\vrule width 5in height 0.4pt\\
                         \@headofdepartment, Dean of \@school } \\
-        \@dept\\
-        \today
+        \@gradprogram\\
+        \@submitdate
 \end{center}
 \clearpage
         }
@@ -672,9 +697,8 @@ acceptable looking results, but it may be omitted to get smaller print.
                 {
 %                \addtocontents{lot}{\protect Table \hfill Page
 %                                    \addvspace{\baselineskip}}  %% MLS 041896
-		
-		% adds the lisst of tables to the table of contents
-		\addcontentsline{toc}{chapter}{\listtablename}
+
+                \addcontentsline{toc}{chapter}{\listtablename}
                 \listoftables
                 }
                 \newpage
@@ -689,7 +713,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 %                \addtocontents{lof}{\protect Figure \hfill Page
 %                                    \addvspace{\baselineskip}}
 
-		% adds the list of figures to the table of contents
+				% adds the list of figures to the table of contents
                 \addcontentsline{toc}{chapter}{\listfigurename}
                 \listoffigures
                 }
