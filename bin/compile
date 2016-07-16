@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+
+import codecs, os, subprocess
+from time import strftime, localtime
+# parse metadata.yaml
+# extract filenames for abstract, dedication, acknowldgements
+
+# open each is open and saved as a variable 
+# -M abstract=""
+
+# put md files in order, and send as metadata
+#	- concatenate and send to pandoc to latex custom writer
+
+#run pandoc-citeproc
+
+# run pdflatex with new directory until no more changes 
+
+# send to pandoc
+
+
+def meta_files(dir):
+	files = {}
+	with codecs.open(os.path.join(dir,'metadata.yaml'), encoding='utf-8', mode="r") as meta_file:
+		in_chapters = False
+		for line in meta_file:
+		
+			if line.startswith("acknowledgements: "):
+				files["ack"] = line[line.find("acknowledgements: ")+len("acknowledgements:"):].strip()
+			elif line.startswith("dedication: "):
+				files["ded"] = line[line.find("dedication: ")+len("dedication: "):].strip()
+			elif line.startswith("abstract: "):
+				files["abs"] = line[line.find("abstract: ")+len("abstract: "):].strip()
+			elif in_chapters == True:
+				if line.startswith("- "):
+					if "chaps" not in files:
+						files["chaps"] = [line.lstrip("- ").strip()]
+					else:
+						files["chaps"] += [line.lstrip("- ").strip()]
+				else: in_contents = False
+			elif line.startswith("chapters:"):
+				in_chapters = True
+	return files
+	
+
+def file_contents(file_name):
+		with codecs.open(file_name, encoding='utf-8', mode="r") as in_file:
+			return in_file.read()
+	
+def run_pandoc(in_dir, out_dir):
+
+	files = meta_files(in_dir)
+	pandoc_metadata = ['-M', 'abstract="'+file_contents(files["abs"])+'"', 
+		'-M', 'dedication="'+file_contents(files["ded"])+'"',
+		'-M','acknowledgements="'+file_contents(files["ack"])+'"']
+	pandoc_files = files["chaps"]
+
+	cmd = "pandoc -t "+in_dir+"/bin/umms_thesis_writer.lua --template="+in_dir+"/bin/umms-thesis-template.tex -o " + out_dir + "/thesis.tex " + " ".join(pandoc_metadata) + " metadata.yaml " + " ".join(pandoc_files)
+
+	subprocess.call(cmd, shell=True)
+
+def open_build():
+	pass
+	
+def run_pdflatex(out_dir):
+	cmd = "pdflatex -interaction=nonstopmode -output-directory="+out_dir+" " +out_dir+"/thesis.tex"
+	p1 = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+	stdout = p1.communicate()
+
+def run_makeindex(dir):
+# 	makeindex build/2016-07-15-210328/test.nlo -s nomencl.ist -o build/2016-07-15-210328/test.nls
+	cmd = "makeindex -q " + dir + "/thesis.nlo -s nomencl.ist -o " +dir+"/thesis.nls " 
+	subprocess.call(cmd, shell=True)
+
+def run_bibtex():
+	pass
+	
+def make_out_dir(pwd):
+
+	build_time = strftime("%Y-%m-%d-%H", localtime())
+	curr_files = os.listdir(pwd)
+	if "builds" not in curr_files:
+		os.mkdir("builds")
+	build_dir = os.path.join("builds", build_time)
+	try:
+		os.mkdir(build_dir)
+	except OSError:
+		pass
+	return build_dir
+	
+if __name__ == "__main__":
+	pwd = os.getcwd()
+	build_dir = make_out_dir(pwd)
+	run_pandoc(pwd, build_dir)
+	
+	run_pdflatex(build_dir)
+	
+	run_pdflatex(build_dir)
+	
+	run_makeindex(build_dir)
+	
+	run_pdflatex(build_dir)
+	
+	# call bibtext test
+	
+	# TODO: add --filter pandoc-citeprocs and process citatations
+	
+	# TODO: internal references? (or just latex \ref{}, \pageref{}
+	
+	# TODO: change output dir to temp, then move pdf to compile
+	
+	# TODO: add draft information...(version and/or date/time?)
