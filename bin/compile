@@ -100,6 +100,8 @@ if __name__ == "__main__":
 	
 	run_pdflatex(build_dir)
 	
+	run_pdflatex(build_dir)
+	
 	# call bibtext test
 	
 	# TODO: add --filter pandoc-citeprocs and process citatations
