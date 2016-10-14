@@ -19,7 +19,6 @@ There are a few pieces of software that you need in order for the UMMSThesis tem
 
 The layout of this demonstration directory is as follows:
 
-<<<<<<< HEAD
 ```
 ├── metadata.yaml (author, title, readers, date, chapter file names, etc.)
 ├── acknowledgements.md
@@ -41,9 +40,6 @@ The layout of this demonstration directory is as follows:
     └── compile                          (python script that pulls everything together and 
                                           sends it to pandoc, and then saves the pdf properly)
 ```                                          
-=======
-1. Install [MacTeX](https://tug.org/mactex/)
->>>>>>> master
 
 There is a ".md" file for each section in the thesis. ".md" means they are markdown files, this is described just below. Additonally your figures files as ".pdf", ".eps", ".jpg" and the like are all together in a figures folder. You can put figures elsewhere, you just need to make sure you use the correct path, when inserting them into a chapter.
 
@@ -53,35 +49,22 @@ The `bin` folder has the resources that will be used to compile your thesis. Sim
 
 ## Writing in markdown
 
-<<<<<<< HEAD
 Microsoft Word and word processor like it are considered "What You See is What You Get" (WYSIWYG... pronounced *whizy-whig*) programs, meaning that the program displays to you the user what you should expect to get out of it. More often then not, this works well. However, when it doesn't work, it often fails spectacularly. This is frequently experienced with large or complex documents (of which your thesis is surely one), and often manifests with figures unpredictably jumping moving out of place, incorrect ordering of number elements (figures, chapters, etc), or simply buggy or sluggish behaviour.
-=======
-### General LaTeX tutorial:
-
-Here is a general [LaTeX tutorial](http://www.latex-tutorial.com/tutorials/).
-
-## features
->>>>>>> master
 
 In contrast to WYSIWYG, is WYSIWYM (what you see is what you mean). Instead of trying to get the document on the screen to look correct while typing, you provide explicit instructions to the computer in plain text, and once your document is compiled you get out the product you asked for. 
 
-<<<<<<< HEAD
 Markdown takes the WYSIWYM concept one step further by providing some simple syntax for explicating formatting text. 
-=======
-You no longer have to fiddle around with Microsoft Word styles or macros or anything. Just open up a standard text editor (notepad, etc) and start writing. We like [TextWrangler](http://www.barebones.com/products/textwrangler/) or [Atom](https://atom.io/) both of which are free.
->>>>>>> master
 
 <!--TODO: add a good example of why WYSIWYM is better-->
 
-<<<<<<< HEAD
 ### standard features
 
-#### inline markup:
-=======
+
 Once you compile your document LaTeX will automagically calculate your section numbers, fill in your Table of Contents, List of Figures, List of Tables, and Bibliography. You will no longer need to worry about updating your Table of Contents after editing something, or struggling to keep Microsoft Word's codefields happy.
 
 LaTeX uses one of the most advanced typesetting programs (TeX) to typeset your thesis. What this means exactly is during compilation, LaTeX is figuring out how best to arrange words to create some of the most beautiful, fully-justified text you will ever find. Leaps and bounds above the standard full-justification available in Word, LaTeX factors in automatic word hyphenation, and kerning adjustments, in additional to intra-word space on a line-by-line basis in order to ensure the most uniform text layout, which results in an pleasant reading experience (ie happy committee!). The TeX engine has been used for decades to typeset professionally published books and journals.
->>>>>>> master
+
+#### inline markup:
 
 - bold font: `**cat**` results in **cat**
 - italics: `*cat*` results in *cat*
@@ -105,7 +88,6 @@ a few lines in it.
 This is a new paragraph.
 ```
 
-<<<<<<< HEAD
 - to add a figure, you first need the name and location of the figure file.
 - once you have that you can insert a figure by writing:
 
@@ -223,6 +205,7 @@ Several components of the Pandoc AST have been overloaded and in the umms_thesis
 - abbreviations are provided by overloading the inline code sytnax (`` putting `code` in single backticks``) and then adding a `abbr` attribute, which is looked for in the writer and used to process the string not as code, but instead as an abbreviation.
 
 You can take a look at the source code for `ummsthesis.lua` to learn more. Ideas suggestion and contributions are always welcome. 
-=======
+
+## Feedback
+
 If you would like to suggest new styles, features, elements etc. please open a new issue on the [issue page](https://github.com/crmackay/umassmed-tex/issues), or add you voice via comment to any related issues. You are also more than welcome to fork this repository, make any changes you want, and open up a pull request (see details on [gitflow here](https://guides.github.com/introduction/flow/))
->>>>>>> master
