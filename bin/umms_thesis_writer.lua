@@ -6,24 +6,30 @@
 -- HTML Character escaping
 -- TODO: add latex character escaping
 local function escape(s, in_attribute)
- return s:gsub("[<>&\\\"']",
-   function(x)
-     if x == '<' then
-       return '&lt;'
-     elseif x == '>' then
-       return '&gt;'
-     elseif x == '&' then
-       return '&amp;'
-     elseif x == '"' then
-       return '&quot;'
-     elseif x == "'" then
-       return '&#39;'
-     elseif x == "\\" then
-     	return '&#92;'
-     else
-       return x
-     end
-   end)
+	return s:gsub("[\n]",
+		function(x)
+			if x == '\n' then
+				return '\n%'
+			end
+		end)
+-- return s:gsub("[<>&\\\"']",
+--   function(x)
+--     if x == '<' then
+--       return '&lt;'
+--     elseif x == '>' then
+--       return '&gt;'
+--     elseif x == '&' then
+--       return '&amp;'
+--     elseif x == '"' then
+--       return '&quot;'
+--     elseif x == "'" then
+--       return '&#39;'
+--     elseif x == "\\" then
+--     	return '&#92;'
+--     else
+--       return x
+--     end
+--   end)
 end
 
 -- Helper function to convert an attributes table into
@@ -163,10 +169,15 @@ function Link(s, src, tit, attr)
          escape(tit,true) .. "'>" .. s .. "</a>"
 end
 
--- TODO: latex-ify
+-- no inline images, everything is piped to 
+
 function Image(s, src, tit, attr)
-  return "<img src='" .. escape(src,true) .. "' title='" ..
-         escape(tit,true) .. "'/>"
+	buffer = {}
+	table.insert(buffer, "\n")
+	print(attr.id)
+	table.insert(buffer, CaptionedImage(src, tit, s, attr))
+	table.insert(buffer, "\n")
+	return table.concat(buffer, "")
 end
 
 -- TODO: latex-ify the second part
@@ -299,18 +310,18 @@ function BulletList(items)
   local buffer = {}
   local count = 0
   for _, item in pairs(items) do
-   		table.insert(buffer, "\t\\item " .. item .."\n")
+   		table.insert(buffer, "\n\t\\item " .. item)
   end
   
-	return "\\begin{itemize}\n" .. table.concat(buffer) .. "\\end{itemize}"
+	return "\\begin{itemize}" .. table.concat(buffer) .. "\n\\end{itemize}"
 end
 
 function OrderedList(items)
   local buffer = {}
   for _, item in pairs(items) do
-    table.insert(buffer, "\t\\item" .. item .. "\n")
+    table.insert(buffer, "\n\t\\item" .. item)
   end
-  return "\\begin{enumerate}\n" .. table.concat(buffer) .. "\n\\end{enumerate}"
+  return "\\begin{enumerate}" .. table.concat(buffer) .. "\n\\end{enumerate}"
 end
 
 -- Revisit association list STackValue instance.
@@ -354,8 +365,29 @@ function CaptionedImage(src, tit, caption, attr)
 	table.insert(buffer, "\\begin{figure}[h!]")
 	table.insert(buffer, "\\centering")
 	table.insert(buffer, "\\label{"..attr.id.."}")
-	table.insert(buffer, "\\includegraphics[width=\\textwidth]{"..src.."}")
-	table.insert(buffer, "\\caption["..attr.short.."]{"..caption.."}")
+	if attr.draft == "true" then
+		table.insert(buffer, [[\centering
+  \fbox{
+    \begin{minipage}[c][0.5\textheight][c]{0.9\textwidth}
+      \centering{]]..src..[[}
+    \end{minipage}
+  }
+  ]])
+	else
+		table.insert(buffer, "\\includegraphics[width=\\textwidth]{"..src.."}")
+	end
+	
+	-- send the short string through pandoc to process markdown syntax to latex
+	local raw_short = attr.short
+	local latex_short = ""
+	if raw_short ~= "" then
+		
+		latex_short = pipe("pandoc -f markdown -t latex", raw_short)
+		table.insert(buffer, "\\caption["..latex_short.."]{"..caption.."}")
+	else
+		table.insert(buffer, "\\caption["..caption.."]{"..caption.."}")
+	end
+	
 	table.insert(buffer, "\\end{figure}")
 	return table.concat(buffer,'\n')
 
@@ -439,8 +471,9 @@ end
 
 function RawBlock(format, str)
 	if format == "tex" then
+		
 		return str
-	else 
+	else
 		-- TODO: escape newlines? is this necessary?
 		return "% " .. escape(str)
 	end

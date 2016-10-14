@@ -43,8 +43,16 @@ def meta_files(dir):
 	
 
 def file_contents(file_name):
+		raw_text = ""
 		with codecs.open(file_name, encoding='utf-8', mode="r") as in_file:
-			return in_file.read()
+			raw_text = in_file.read()
+
+		cmd = "pandoc -t ./bin/umms_thesis_writer.lua" 
+		
+		p1 = subprocess.Popen(cmd, shell=True, stdin = subprocess.PIPE, stdout=subprocess.PIPE)
+		formatted_text, err = p1.communicate(raw_text)
+		
+		return formatted_text
 	
 def run_pandoc(in_dir, out_dir):
 
@@ -62,7 +70,7 @@ def open_build():
 	pass
 	
 def run_pdflatex(out_dir):
-	cmd = "pdflatex -interaction=nonstopmode -output-directory="+out_dir+" " +out_dir+"/thesis.tex"
+	cmd = "xelatex -interaction=nonstopmode -output-directory="+out_dir+" " +out_dir+"/thesis.tex"
 	p1 = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
 	stdout = p1.communicate()
 

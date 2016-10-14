@@ -66,11 +66,12 @@
 
 % redefines the `\figure` and `\table` `\longtable` commands to automatically 
 % include a `\newpage` command before and after
+%    also switches to singlespacing for figure legends, and then switches back after
 \let\origfigure\figure
-\renewcommand{\figure}{\newpage\origfigure}
+\renewcommand{\figure}{\newpage\beginsinglespace\origfigure}
 
 \let\origendfigure\endfigure
-\renewcommand{\endfigure}{\origendfigure\newpage}
+\renewcommand{\endfigure}{\origendfigure\endsinglespace\newpage}
 
 \let\origtable\table
 \renewcommand{\table}{\newpage\origtable}
@@ -101,7 +102,7 @@
 %% list of figures(lof) format changes:
 	% Figures with numbers will display "Figure #" in List of Figures
 	\renewcommand{\cftfigpresnum}{\figurename~~}
-	\renewcommand{\cftfignumwidth}{5.2em}
+	\renewcommand{\cftfignumwidth}{6em}
 	% sets vertical space between entries in lof
 	\setlength{\cftbeforefigskip}{0.5em}
 
@@ -358,10 +359,12 @@
 }
 
 \def\subsubsection{
+	\addtocontents{toc}{\protect\addvspace{.2\baselineskip}}
 	\@startsection{subsubsection}{3}{\z@}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}{\sl}
 }
 
 \def\paragraph{
+	\addtocontents{toc}{\protect\addvspace{.2\baselineskip}}
 	\@startsection{paragraph}{4}{\parindent}{\z@}{-1em}{\sl}
 }
 
@@ -726,9 +729,13 @@
 
 % (replaces 'chapter' by 'listintoc'and
 \def\prefacesection#1{
-	\chapter*{\bf \protect\uppercase{#1}}
+	% removed change to uppercase
+	% \chapter*{\bf \protect\uppercase{#1}}
+	\chapter*{\bf \protect{#1}}
 	\thispagestyle{plain}
-	\addcontentsline{toc}{chapter}{\texorpdfstring{\protect\uppercase{#1}}{#1}}
+	% removed change to uppercase
+	% \addcontentsline{toc}{chapter}{\texorpdfstring{\protect\uppercase{#1}}{#1}}
+	\addcontentsline{toc}{chapter}{\texorpdfstring{\protect{#1}}{#1}}
 }
 
 %%%%%%%

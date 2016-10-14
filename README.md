@@ -15,6 +15,7 @@ There are a few pieces of software that you need in order for the UMMSThesis tem
 - pandoc-citeproc
 - highlighting-kate (only if you are using code highlighting)
 - python
+- computer modern unicode font (http://cm-unicode.sourceforge.net/install.html)
 
 The layout of this demonstration directory is as follows:
 
