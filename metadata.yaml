@@ -21,24 +21,14 @@ license: This work is licensed under the <blank> licence.
 #csl file
 citation-style: resources/national-library-of-medicine-grant-proposals+pmcid+doi.csl
 
-# the outline dictates the order of your chapters
-
+# here we identify each of font-matter files
 acknowledgements: acknowledgements.md
 dedication: dedication.md
 abstract: abstract.md
 
+# the outline tells the compiler which files are your chapters, and in which order to include them
 chapters: 
 - introduction.md
 - chapter1.md
 - chapter2.md
 - chapter3.md
-
-#this is a a yaml details file to set the variable for the pandoc template
-# this is still under development
-
-# TODO: 
-#- add a file name for the bibliography file
-#- add a csl for the references?
-#- add the ability to add a creative commons liscence?
-
----
