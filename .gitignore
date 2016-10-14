@@ -127,3 +127,7 @@ sympy-plots-for-*.tex/
 # WinEdt
 *.bak
 *.sav
+
+builds/2016-10-14-12/thesis.nls
+
+builds/2016-10-14-12/thesis.tex
