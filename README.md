@@ -1,8 +1,8 @@
 # UMass Med GSBS PhD Thesis template
 
-This is a template and compilation pipeline designed to make writing your thesis just a bit less terrible. and perhaps even a bit enjoyable.
+This is a template and compilation pipeline designed to make writing your thesis just a bit less terrible and perhaps even a bit enjoyable.
 
-This template uses a number of well-tested open-source tools to take a series of simple text files, your figure image files, and your provided metadata and stitch them together into a great looking pdf file that is ready for printing.
+This template uses a number of well-tested, open-source tools to take a series of simple text files, your figure image files, and your provided metadata and stitch them together into a great looking pdf file that is ready for printing.
 
 ## Getting started
 
@@ -10,12 +10,19 @@ This template uses a number of well-tested open-source tools to take a series of
 
 There are a few pieces of software that you need in order for the UMMSThesis template to work properly:
 
-- a TeX distribution (MacTeX, TeXLive, or MikTeX, etc.)
-- pandoc
-- pandoc-citeproc
-- highlighting-kate (only if you are using code highlighting)
-- python
-- computer modern unicode font (http://cm-unicode.sourceforge.net/install.html)
+- **Required:**
+	- a TeX distribution (MacTeX, TeXLive, or MikTeX, etc.)
+	- pandoc
+	- pandoc-citeproc
+	- python
+	- the files included here (availble as a `.zip` via the "Clone or Download" button above, or from this link: https://github.com/GSBS-Bootstrappers/umassmed-tex/archive/master.zip)
+
+- **Optional:**
+	- highlighting-kate 
+		- (used to provide syntax highlighting for blocks of source code)
+	- computer modern unicode font 
+		- available at: http://cm-unicode.sourceforge.net/install.html
+		- a classic, smart-looking font that supports pretty much all greek/scientific symbol
 
 The layout of this demonstration directory is as follows:
 
@@ -40,36 +47,42 @@ The layout of this demonstration directory is as follows:
     └── compile                          (python script that pulls everything together and 
                                           sends it to pandoc, and then saves the pdf properly)
 ```                                          
+### Brief Summary 
 
-There is a ".md" file for each section in the thesis. ".md" means they are markdown files, this is described just below. Additonally your figures files as ".pdf", ".eps", ".jpg" and the like are all together in a figures folder. You can put figures elsewhere, you just need to make sure you use the correct path, when inserting them into a chapter.
+Together, everything is a collection of all of the disparate elements of a thesis, neatly organized into separate documents and folders. At any time you are free to them compile these elements using the included software to generate a single PDF file of your thesis. A few benefits of this approach: you can edit a figure image file, without then having to copy and paste into your thesis after every change, your table of contents is automatically generated based on the current layout of your sections, your writing application doesn't become slow and laggy because your thesis contains a lot of images and text elements. 
 
-The `metadata.yaml` file hold all of the extra information about your particular thesis: title, author, readers, date, etc. It also lists your chapter files. This list of "chapters" is used to insert and compile your chapters in the correct order. 
+### How it works
 
-The `bin` folder has the resources that will be used to compile your thesis. Simply put you should be able to build your thesis by running `$ bin/compile` on a unix machine or `> bin\compile` on a windows machine from the thesis directory. If this is confusing to you, ask for help. A tutorial is forthcoming.
+There is a markdown file (a file ending in ".md") for each chapter in your thesis. These files are plain text files (you can open and edit them in textedit, or notepad for example). More about markdown is described just below. 
+
+Each figures also exists as the simple image file within this folder. Formats that work include ".pdf", ".eps", ".jpg". (*nb - support for `.tiff` files is forthcoming*). These files can be all together in a figures folder, or you can put them elsewhere. When you put a figure into your thesis, you simply type the location of the image file along with the caption text into a chapterX.md file. In this way you are free to update or edit the figure files themselves at any time, and your figures will be updated automatically the next time you compile your thesis. Say you want to edit a figure in Illustrator. Simply open the .pdf file, update it, and save it. Next time you compile your thesis the figure will be updated.
+
+The `metadata.yaml` file holds all of the extra information about your particular thesis: the title, your name as the author, your thesis readers, the defense date, etc. It also lists which chapter files should be included and in which order. 
+
+The `bin` folder has the resources that will be used to compile your thesis. Simply put you should be able to build your thesis by running `$ bin/compile` on a unix machine or `> bin\compile` on a windows machine from the thesis directory. If this is confusing to you, ask for help! A tutorial is forthcoming, but we can sit down with you all and work you through it too if you want.
 
 ## Writing in markdown
 
-Microsoft Word and word processor like it are considered "What You See is What You Get" (WYSIWYG... pronounced *whizy-whig*) programs, meaning that the program displays to you the user what you should expect to get out of it. More often then not, this works well. However, when it doesn't work, it often fails spectacularly. This is frequently experienced with large or complex documents (of which your thesis is surely one), and often manifests with figures unpredictably jumping moving out of place, incorrect ordering of number elements (figures, chapters, etc), or simply buggy or sluggish behaviour.
+Microsoft Word and word processor like it are considered "What You See is What You Get" (WYSIWYG... pronounced *whizy-whig*) programs, meaning that the program displays to you the user what you should expect to get out of it. More often then not, this works well. However, when it doesn't work, it often fails spectacularly. This is frequently experienced with large or complex documents (of which your thesis is surely one), and often manifests with figures unpredictably jumping, moving out of place, or disappearing, incorrect ordering of numbered elements (figures, chapters, etc), or simply buggy or sluggish behaviour.
 
-In contrast to WYSIWYG, is WYSIWYM (what you see is what you mean). Instead of trying to get the document on the screen to look correct while typing, you provide explicit instructions to the computer in plain text, and once your document is compiled you get out the product you asked for. 
+In contrast to WYSIWYG, is WYSIWYM (what you see is what you mean). Instead of trying to get the document on the screen to look correct while typing, you provide explicit instructions to the computer in plain text as to how you want it to look once processed. You then have the computer process the document, to produce a pdf file that should look like what you asked for. 
 
 Markdown takes the WYSIWYM concept one step further by providing some simple syntax for explicating formatting text. 
+
+Once you compile your document the program will automagically calculate your section numbers, fill in your Table of Contents, List of Figures, List of Tables, Abbreviations, and Bibliography. You will no longer need to worry about updating your Table of Contents after editing something, or struggling to keep Microsoft Word's codefields happy. 
+
+Additiaonlly, the program here uses LaTeX as the typesetting engine (ie the software that decides where each letter goes on a page). LaTeX is one of the most advanced typesetting programs (TeX) that exists today, is used to professionally typset many journals and books. What this means exactly is during compilation, LaTeX is figuring out how best to arrange words and hyphens to create some of the best-looking fully-justified text possible. See a nice comparision [here](http://www.zinktypografie.nl/latex.php?lang=en)
 
 <!--TODO: add a good example of why WYSIWYM is better-->
 
 ### standard features
-
-
-Once you compile your document LaTeX will automagically calculate your section numbers, fill in your Table of Contents, List of Figures, List of Tables, and Bibliography. You will no longer need to worry about updating your Table of Contents after editing something, or struggling to keep Microsoft Word's codefields happy.
-
-LaTeX uses one of the most advanced typesetting programs (TeX) to typeset your thesis. What this means exactly is during compilation, LaTeX is figuring out how best to arrange words to create some of the most beautiful, fully-justified text you will ever find. Leaps and bounds above the standard full-justification available in Word, LaTeX factors in automatic word hyphenation, and kerning adjustments, in additional to intra-word space on a line-by-line basis in order to ensure the most uniform text layout, which results in an pleasant reading experience (ie happy committee!). The TeX engine has been used for decades to typeset professionally published books and journals.
 
 #### inline markup:
 
 - bold font: `**cat**` results in **cat**
 - italics: `*cat*` results in *cat*
 - verbatim (aka, monospaced, aka code)`` `cat` `` results in `cat`
-- small caps: `<span style:"font-valueriant:small-caps">Cat</span>` should result in ![](docs/smallcaps.png)
+- small caps: `[Cat]{.small-caps"}` should result in something like this, but inline: ![](docs/smallcaps.png)
 
 #### block level markup:
 

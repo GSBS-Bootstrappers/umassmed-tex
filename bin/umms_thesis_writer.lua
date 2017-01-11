@@ -227,7 +227,15 @@ end
 
 -- TODO: latex-ify
 function Span(s, attr)
-  return "<span" .. attributes(attr) .. ">" .. s .. "</span>"
+	if attr.class == "small-caps" then
+		"\\textsc{" .. s .. "}"
+	else if attr.class == "abbr" then
+		-- TODO: add processing of abbreviation
+		return "<span" .. attributes(attr) .. ">" .. s .. "</span>"
+	else 
+		return "\\label{span:" .. attr.id .."}{" .. s .. "}"
+	end
+  
 end
 
 -- this takes the string inside the cite object (md: "[@blah]", 
@@ -477,6 +485,10 @@ function RawBlock(format, str)
 		-- TODO: escape newlines? is this necessary?
 		return "% " .. escape(str)
 	end
+end
+
+function LineBlock(ls)
+	return table.concat(ls, '\\ \\n')
 end
 
 -- The following code will produce runtime warnings when you haven't defined
