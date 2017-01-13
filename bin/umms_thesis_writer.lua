@@ -1,7 +1,6 @@
--- markdown to latex handout custom writer...
+-- markdown to LaTeX custom writer for UMMS GSBS dissertations
 
--- work in progress 
-
+-- work in progress for more details see: https://github.com/GSBS-Bootstrappers/umassmed-tex
 
 -- HTML Character escaping
 -- TODO: add latex character escaping
@@ -88,7 +87,8 @@ local testTable = {}
 
 -- crm-note: still not sure the distinction between variable and metadata...
 
--- this function returns what is ultimately but into the 
+-- this function returns what is ultimately put into the document template
+
 function Doc(body, metadata, variables)
 	for _,data in pairs(metadata) do 
 --		print(data)
@@ -114,14 +114,14 @@ function Doc(body, metadata, variables)
 end
 
 -- The functions that follow render corresponding pandoc elements.
--- s is always a string, attr is always a table of attributes, and
--- items is always an array of strings (the items in a list).
+-- `s` is always a string, `attr` is always a table of attributes, and
+-- `items` is always an array of strings (the items in a list).
 -- Comments indicate the types of other variables.
 
 function Str(s)
-	return s:gsub(" ", "~")
 	
--- TODO: att a prettyfy function that deals with " and other common symbols
+--	TODO: why is this here:
+	return s:gsub(" ", "~")
 end
 
 function Space()
@@ -157,49 +157,38 @@ function SmallCaps(s)
 end
 
 
--- TODO: assure that the template has \usepackage[normalem]{ulem}
--- \sout{ text to be stricken out}
+-- this requires: \usepackage[normalem]{ulem}
 function Strikeout(s)
   return '\\sout{' .. s .. '}'
 end
 
 -- TODO: latex-ify
 function Link(s, src, tit, attr)
-  return "<a href='" .. escape(src,true) .. "' title='" ..
-         escape(tit,true) .. "'>" .. s .. "</a>"
+	-- if an internal link is found
+	-- TODO: figure out this vs cite? and whether to put 
+	if string.startswith(src, "#") then
+		src = string.TrimLeft(src, "#")
+		 
+		return "\\protect\\hyperlink{" .. src .. "}{" .. s .. "}"
+	else
+		return "\\href{" .. src .. "}{" .. s .."}"
+	end
 end
 
--- no inline images, everything is piped to 
-
+-- for now inline images are not allowed, so inline images 
+-- are simply insertes as captioned images
+-- nb: we can add inline image support later if this feature is needed
 function Image(s, src, tit, attr)
 	buffer = {}
 	table.insert(buffer, "\n")
-	print(attr.id)
 	table.insert(buffer, CaptionedImage(src, tit, s, attr))
 	table.insert(buffer, "\n")
 	return table.concat(buffer, "")
 end
 
--- TODO: latex-ify the second part
+-- inline code (example: here is some`code`)
 function Code(s, attr)
-
-	-- inline code overloading: if inline code has an attribute of "abbr" then it is 
-	-- treated as an abbreviation instead of code	
-	if attr.abbr ~= '' then
---		TODO: add processing of abbreviation
-		local buffer = {}
-		short = pipe("pandoc -f markdown -t latex", s)
-		short = short:gsub("\n","")
-		
-		long = pipe("pandoc -f markdown -t latex", attr.abbr)
-		long = long:gsub("\n", "")
-		
-		table.insert(buffer, short)
-		table.insert(buffer, "\\nomenclature{"..short.."}{"..long.."}")
-		return table.concat(buffer,'')
-	end
-  return "<code" .. attributes(attr) .. ">" .. escape(s) .. "</code>"
-  
+  return "\\text{" .. s .. "}"
 end
 
 function InlineMath(s)
@@ -210,30 +199,65 @@ function DisplayMath(s)
   return "\\[" .. escape(s) .. "\\]"
 end
 
-
--- TODO: latex-ify
 -- function called for footnotes ("lorum ipsum[^1] ...\n [^1]: this is footnote")
 function Note(s)
-  local num = #notes + 1
-  -- insert the back reference right before the final closing tag.
-  s = string.gsub(s,
-          '(.*)</', '%1 <a href="#fnref' .. num ..  '">&#8617;</a></')
-  -- add a list item with the note to the note table.
-  table.insert(notes, '<li id="fn' .. num .. '">' .. s .. '</li>')
-  -- return the footnote reference, linked to the note.
-  return '<a id="fnref' .. num .. '" href="#fn' .. num ..
-            '"><sup>' .. num .. '</sup></a>'
+  return "\\footnote{" .. s .. "}"
 end
 
--- TODO: latex-ify
+-- function handles general spans of text (eg: [this is a span]{.small-caps}
 function Span(s, attr)
+	
+	-- for small caps
 	if attr.class == "small-caps" then
-		"\\textsc{" .. s .. "}"
-	else if attr.class == "abbr" then
-		-- TODO: add processing of abbreviation
-		return "<span" .. attributes(attr) .. ">" .. s .. "</span>"
+		return "\\textsc{" .. s .. "}"
+	
+	-- for an abbreviation
+	elseif attr.abbr ~= nil then
+		local buffer = {}
+	
+		local abbr = pipe("pandoc -f markdown -t latex", attr.abbr)
+		abbr = abbr:gsub("\n", "")
+
+		table.insert(buffer, s)
+		table.insert(buffer, " ")
+		table.insert(buffer, "\\nomenclature{"..s.."}{" .. abbr .. "}")
+		return table.concat(buffer,'')
+
+	-- for math
+	elseif string.sub(attr.id,1,2) == "eq" then
+		--TODO: strip off newlines at the beginning and end of string ...somehow
+		local env = "equation"
+		
+		-- if attr.env ~="align", then stip out `\begin{equation}` and `\end{equation}` 
+		-- from any contained equations
+		-- and rearrange a bit so that each equation is on one line with its label, and then
+		-- the line ends with a `\\`
+		if attr.env == "align" then
+			env = attr.env
+			s = string.gsub(s, "\\begin{equation}\n", "")	-- remove \begin{equation} line
+			s = string.gsub(s, "\n\\label{", " \\label{") 	-- put label on line above it
+			s = string.gsub(s, "}\n\\end", "} \\\\ \\end")	-- put `\\` after label
+			s = string.gsub(s, "\\end{equation}", "")		-- remove \end{equation}
+		end
+	
+		local buffer = {}
+		table.insert(buffer, "\\begin{" .. env .. "}")
+		table.insert(buffer, s)
+
+		-- the align environment itself shouldn't have a a label, so this checks
+		-- to make sure the environment is anything but
+		if env ~= "align" then
+			table.insert(buffer, "\\label{" .. attr.id .. "}")
+		end
+
+		table.insert(buffer, "\\end{" .. env .. "}")
+
+		return table.concat(buffer, "\n")
+	
+	-- fallthrough
 	else 
-		return "\\label{span:" .. attr.id .."}{" .. s .. "}"
+		--return "\\label{span:" .. attr.id .."}{" .. s .. "}"
+		return "hello"
 	end
   
 end
@@ -291,26 +315,9 @@ end
 -- to parse and highlight it
 -- otherwise, check to see if it's a latex equation in need of a label 
 function CodeBlock(s, attr)
-	if attr.class ~= "" then
+	if attr.class ~= nil then
 		local code = pipe("highlighting-kate -F latex -f -s " .. attr.class, s) 
 		return code
-	
-	-- if the attribute string contains an id starting with "eq" it is a latex equation 
-	-- if an env attribute it set, use that as the enclosing environment, otherwise 
-	-- default to "\begin{equation}...\end{equation}"
-	elseif string.sub(attr.id,1,2) == "eq" then
-		-- TODO: strip off newlines at the beginning and end of string ...somehow
-		local env = "equation"
-		
-		if attr.env ~= "" then
-			env = attr.env
-		end
-		
-		local buffer = {}
-		table.insert(buffer, "\\begin{" .. env .. "}" .. "\\label{" .. attr.id .. "}")
-		table.insert(buffer, s)
-		table.insert(buffer, "\\end{" .. env .. "}")
-		return table.concat(buffer, "\n")
 	end
 end
 
@@ -363,7 +370,7 @@ function CaptionedImage(src, tit, caption, attr)
 --	if attr.caption then
 --		if attr.caption == "side" then
 --		
---		else if attr.caption == "below" then
+--		elseif attr.caption == "below" then
 --		end
 --	end
 --

@@ -86,11 +86,14 @@ Additiaonlly, the program here uses LaTeX as the typesetting engine (ie the soft
 
 #### block level markup:
 
+##### sections and headings
 - sections begin with `#` characters, and the number of `#`'s signifies the level:
     - `# chapter title` : results in a chapter title (aka level 1)
     - `## section title`: is a section title within a chapter (aka level 2)
     - you can go all the way to 6 levels:
         - `###### this is a subparagraph header`
+
+##### new paragraphs
 
 - to create new paragraphs just skip a line
 
@@ -101,6 +104,7 @@ a few lines in it.
 This is a new paragraph.
 ```
 
+##### figures
 - to add a figure, you first need the name and location of the figure file.
 - once you have that you can insert a figure by writing:
 
@@ -152,11 +156,12 @@ a work in progress
 
 #### math
 
+##### equations:
+
 In order to allow for your equations to be numbered and labeled properly so that they can be referenced easily elsewhere in your thesis you can include your LaTeX math code inside a code environment labelled with an `#eq:` ID field. This ID, can then be used for referenced later.
 
-    ```{#eq:einstein}
-    E = mc^2
-    ``` 
+    [E = mc^2]{#eq:einstein}
+     
 
 And that this id can be used to reference your equation elsewhere:
 
@@ -169,23 +174,39 @@ proportional to its mass.
 
 The above `\ref{..}` segment will automatically get replaced with the correct equation number for the Einstein equation. You can also use `\pageref{...}` command to insert the page of the identified equation:
 
+More complicated equations can be created (see below).
+
+
 ``` markdown
 As can be seen in Equation \ref{eq:einstein} on 
 Page \pageref{#eq:einstein}, the energy of 
 something is directly proportional to its mass.
 ```
 
-##### Using other equation environments
+##### inline math
+
+If you just want a simple bit of math within a line of text, surround it with single dollar signs
+
+```markdown
+Newton's force equation ($F=m*a$) is important.
+```
+
+##### Advanced: Using other LaTeX equation environments
 
 **NOTE*: still under development - haven't figured out how to properly address labels yet*
 
-The above examples result in the standard LaTeX `equation` environment. If you need a different environment, like `align` or `gather`, or something else, you can just supply that in an attribute string along with a `.latex-math` like so:
+The above examples result in the standard LaTeX `equation` environment. If you need a different environment, like `align` or `gather`, or something else, you can get it. This is a prototype of how it could work:
 
-    ``` {.latex-math env=align}
-    E &= mc^2    {#eq:einsteins}    \\ 
-    E &= h\nu     {#eq:energy-to-light}
-    ```
-Notice as well that in the above example, the `align` LaTeX environment numbers each equation separately. For this reason you can provide separate ID's via the `{#eq: ...}` syntax.
+``` markdown
+[
+[e=mc^2]{#eq:one}
+[h=vn]{#eq:two}
+]{#eq env="align"}
+```
+
+Notice as well that in the above example, the `align` LaTeX environment numbers each equation separately. For this reason you can provide separate ID's via the `[...]{#eq:...}` syntax.
+
+Inside the bracket is raw LaTeX so anything goes. 
 
 #### abbreviations (Under development)
 
@@ -209,13 +230,13 @@ I don't have have an image yet of what this should result in...
 
 ### Notes for developers:
 
-Several components of the Pandoc AST have been overloaded and in the umms_thesis_writer.lua custom writer, in order to allow for figure short captions, labelling of math, internal references, and the like. 
+Several components of the Pandoc AST have been overloaded and in the umms-thesis-writer.lua custom writer, in order to allow for figure short captions, labelling of math, internal references, and the like. 
 
 - a `short` attribute was added to the figure markup, to allow used to explicitly provide a short caption for the list of figures
 
-- a special class of inline code (`.latex-math`) is processed to allow for users to explicitly label individual equations, and also to use specialty equation environments via the `env` attribute. Any code block with an id value (a `#` value) that begins with `eq:` is automatically processed as latex math. The default LaTeX equation environment is `begin{equation}...\end{equation}`
+- ID attributes on display code via spans
 
-- abbreviations are provided by overloading the inline code sytnax (`` putting `code` in single backticks``) and then adding a `abbr` attribute, which is looked for in the writer and used to process the string not as code, but instead as an abbreviation.
+- allowing other LaTeX math environments
 
 You can take a look at the source code for `ummsthesis.lua` to learn more. Ideas suggestion and contributions are always welcome. 
 

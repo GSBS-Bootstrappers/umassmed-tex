@@ -2,21 +2,33 @@
 
 import codecs, os, subprocess
 from time import strftime, localtime
-# parse metadata.yaml
-# extract filenames for abstract, dedication, acknowldgements
 
-# open each is open and saved as a variable 
-# -M abstract=""
+""" workflow:
 
-# put md files in order, and send as metadata
-#	- concatenate and send to pandoc to latex custom writer
+- parse metadata.yaml
 
-#run pandoc-citeproc
+- extract filenames for abstract, dedication, acknowldgements
 
-# run pdflatex with new directory until no more changes 
+- open each of these save included text as a variable for pandoc's `-M` flag
+	- eg: -M abstract="the text of the abstract"
 
-# send to pandoc
+- in order, open and add together the other .md files 
 
+- concatenate these together and send to pandoc via a latex custom writer
+
+- run pdflatex several times
+
+- run makeindex
+
+- run pdflatex several more times
+
+- run pandoc-citeproc (TODO)
+
+- run pdflatex several more times
+
+- TODO: add idempotent test (only run pdflatex until no more changes are made to it's source files)
+
+"""
 
 def meta_files(dir):
 	files = {}
