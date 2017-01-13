@@ -18,7 +18,7 @@ school-dean: John Smith, Ph.D.
 
 license: This work is licensed under the <blank> licence. 
 
-#csl file
+# csl file
 citation-style: resources/national-library-of-medicine-grant-proposals+pmcid+doi.csl
 
 # here we identify each of font-matter files
@@ -32,3 +32,5 @@ chapters:
 - chapter1.md
 - chapter2.md
 - chapter3.md
+
+---

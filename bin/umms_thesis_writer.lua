@@ -3,7 +3,7 @@
 -- work in progress for more details see: https://github.com/GSBS-Bootstrappers/umassmed-tex
 
 -- HTML Character escaping
--- TODO: add latex character escaping
+-- TODO: add latex character escaping (if necessary?)
 local function escape(s, in_attribute)
 	return s:gsub("[\n]",
 		function(x)
@@ -162,7 +162,6 @@ function Strikeout(s)
   return '\\sout{' .. s .. '}'
 end
 
--- TODO: latex-ify
 function Link(s, src, tit, attr)
 	-- if an internal link is found
 	-- TODO: figure out this vs cite? and whether to put 
@@ -225,7 +224,7 @@ function Span(s, attr)
 
 	-- for math
 	elseif string.sub(attr.id,1,2) == "eq" then
-		--TODO: strip off newlines at the beginning and end of string ...somehow
+	
 		local env = "equation"
 		
 		-- if attr.env ~="align", then stip out `\begin{equation}` and `\end{equation}` 
@@ -407,9 +406,9 @@ function CaptionedImage(src, tit, caption, attr)
 	table.insert(buffer, "\\end{figure}")
 	return table.concat(buffer,'\n')
 
---
--- ffbox figure option:
 
+-- ffbox figure option:
+--
 --	local buffer = {}
 --	
 --	table.insert(buffer, "\\begin{figure}")
@@ -421,7 +420,6 @@ function CaptionedImage(src, tit, caption, attr)
 --	table.insert(buffer, "\\end{figure}")
 --	return table.concat(buffer,'\n')
 
-	
 end
 
 -- Caption is a string, aligns is an array of strings,
@@ -430,46 +428,73 @@ end
 -- TODO: add parsing of the caption to look for an attribute string, with a title in it
 -- eg: Table: this is the table caption {title="this is the short caption"}
 function Table(caption, aligns, widths, headers, rows)
-  local buffer = {}
-  local function add(s)
-    table.insert(buffer, s)
-  end
-  add("\\begin{table}")
-  if caption ~= "" then
-    add("\\caption{" .. caption .. "}")
-  end
-  if widths and widths[1] ~= 0 then
-    for _, w in pairs(widths) do
-      add('<col width="' .. string.format("%d%%", w * 100) .. '" />')
-    end
-  end
-  local header_row = {}
-  local empty_header = true
-  for i, h in pairs(headers) do
-    local align = html_align(aligns[i])
-    table.insert(header_row,'<th align="' .. align .. '">' .. h .. '</th>')
-    empty_header = empty_header and h == ""
-  end
-  if empty_header then
-    head = ""
-  else
-    add('<tr class="header">')
-    for _,h in pairs(header_row) do
-      add(h)
-    end
-    add('</tr>')
-  end
-  local class = "even"
-  for _, row in pairs(rows) do
-    class = (class == "even" and "odd") or "even"
-    add('<tr class="' .. class .. '">')
-    for i,c in pairs(row) do
-      add('<td align="' .. html_align(aligns[i]) .. '">' .. c .. '</td>')
-    end
-    add('</tr>')
-  end
-  add('</table')
-  return table.concat(buffer,'\n')
+	local table_buffer = {}
+	
+	local function add(s)
+		table.insert(table_buffer, s)
+	end
+	 -- \usepackage{booktabs}
+	add("\\begin{tabular}")
+	add("\\toprule")
+	
+	if caption ~= "" then
+		add("\\caption{" .. caption .. "}")
+	end
+	
+	if widths and widths[1] ~= 0 then
+		for _, w in pairs(widths) do
+			add('<col width="' .. string.format("%d%%", w * 100) .. '" />')
+		end
+	end
+	
+	local header_row = {}
+	local empty_header = true
+	
+	for i, h in pairs(headers) do
+		local align = html_align(aligns[i])
+		table.insert(header_row,'<th align="' .. align .. '">' .. h .. '</th>')
+		empty_header = empty_header and h == ""
+	end
+	
+	if empty_header then
+		head = ""
+	else
+		add('<tr class="header">')
+		
+		for _,h in pairs(header_row) do
+			add(h)
+		end
+		
+		add('\\')
+  	end
+  	
+	local class = "even"
+	
+	
+	for _, row in pairs(rows) do
+		
+		local row_buffer = {}
+		for i,c in pairs(row) do
+
+--			add('<td align="' .. html_align(aligns[i]) .. '">' .. c .. '</td>')
+			
+			
+			-- if we have the first element in row then dont prepend `&`
+			if i == 0 then
+				table.insert(row_buffer, c)
+			else
+				table.insert(row_buffer, "&")
+				table.insert(row_buffer, c)
+    	end
+    	
+    	table.insert(row_buffer, '\\t\\\\')
+    	add(table.concat(table_buffer, row_buffer)
+	end
+	
+	add('\\bottomrule')
+	add('\\end{tabular}')
+	
+	return table.concat(table_buffer,'\n')
 end
 
 function Div(s, attr)
@@ -487,7 +512,6 @@ end
 
 function RawBlock(format, str)
 	if format == "tex" then
-		
 		return str
 	else
 		-- TODO: escape newlines? is this necessary?
