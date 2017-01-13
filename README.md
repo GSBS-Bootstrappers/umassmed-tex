@@ -218,7 +218,7 @@ Inside the bracket is raw LaTeX so anything goes.
 In order to have an abbreviation show up in the list of abbreviations, when it is first introduced you can mark it as an abbreviation as shown below, and Pandoc and LaTeX will do the rest.
 
 ```markdown
-`DNA`{abbr="deoxyribonucleic acid"}
+[DNA]{abbr="deoxyribonucleic acid"}
 ```
 
 This will insert the text "DNA" into your document, while also adding "DNA" and "deoxyribonucleic acid" to your list of abbreviations (found after the list of figures and list of tables). You only need to do this once for each abbreviation, generally the first time an abbreviation is used.
@@ -226,7 +226,9 @@ This will insert the text "DNA" into your document, while also adding "DNA" and 
 You can also include markup within your abbreviated statement, or its expanded form:
 
 ```markdown
-`*H. sapiens*`{abbr="*Homo sapiens* is the genus and species of humans"}
+
+Humans are known as [*H. sapiens*]{abbr="*Homo sapiens* is the genus and species of humans"}
+
 ```
 
 I don't have have an image yet of what this should result in...
