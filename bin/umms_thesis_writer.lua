@@ -236,7 +236,7 @@ function Span(s, attr)
 			env = attr.env
 			s = string.gsub(s, "\\begin{equation}\n", "")	-- remove \begin{equation} line
 			s = string.gsub(s, "\n\\label{", " \\label{") 	-- put label on line above it
-			s = string.gsub(s, "}\n\\end", "} \\\\ \\end")	-- put `\\` after label
+			s = string.gsub(s, "}\n\\end", "} \\\\\\end")	-- put `\\` after label
 			s = string.gsub(s, "\\end{equation}", "")		-- remove \end{equation}
 		end
 	
@@ -251,9 +251,10 @@ function Span(s, attr)
 		end
 
 		table.insert(buffer, "\\end{" .. env .. "}")
-
-		return table.concat(buffer, "\n")
-	
+		
+		-- removes the final `\\` before returning
+		return string.gsub(table.concat(buffer, "\n"), "\\\\\n\\end{", "\n\\end{") 
+		
 	-- fallthrough
 	else 
 		--return "\\label{span:" .. attr.id .."}{" .. s .. "}"
