@@ -28,7 +28,7 @@
 	left=1.5in,
 	top=1.5in
 }
-
+\usepackage{amsmath}
 \RequirePackage{nomencl}
 \makenomenclature
 \renewcommand{\nomname}{\textbf{Abbreviations}}
@@ -64,7 +64,7 @@
 %%\vskip\belowcaptionskip}
 
 
-% redefines the `\figure` and `\table` `\longtable` commands to automatically 
+% redefines the `\figure` and `\table` `\longtable` commands to automatically
 % include a `\newpage` command before and after
 %    also switches to singlespacing for figure legends, and then switches back after
 \let\origfigure\figure
@@ -141,7 +141,7 @@
 \newcommand{\Aref}[1]{Appendix~\ref{#1}}
 
 
-%% TODO: this should all get moved to a readme or something 
+%% TODO: this should all get moved to a readme or something
 
 %  Example of use:
 %    \documentclass[letterpaper,oneside,11pt]{book}
@@ -327,7 +327,7 @@
 		\@topnewpage[\@makechapterhead{#2}]
 	\else \@makechapterhead{#2}
 		% Routine called after chapter and section heading.
-		\@afterheading                  
+		\@afterheading
 	\fi
 }
 
@@ -353,7 +353,7 @@
 	\else
 		\addtocontents{toc}{\protect\addvspace{.2\baselineskip}} %VE
 	\fi
-	
+
 	% \bf instead of \large VE
 	\@startsection{subsection}{2}{\z@}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}{\sl\bf}
 }
@@ -390,7 +390,7 @@
 		\chaptermark{##1}
 		\if@twocolumn                           % Tests for two-column mode.
 			\@topnewpage[\@makechapterhead{##2}]
-		\else 
+		\else
 			\@makechapterhead{##2}
 			\@afterheading                        % Routine called after chapter and
 		\fi
@@ -581,7 +581,7 @@
 
 % Define new conditional to check for copyright, tables, figures.
 % Creates control sequences \...true  \...false ....
-% eg: 	`\newif\ifcopyright` creates the control sequences `\copyrighttrue` and 
+% eg: 	`\newif\ifcopyright` creates the control sequences `\copyrighttrue` and
 %		`\copyrightfalse`, which can then be used in a document
 \newif\ifcopyright
 \newif\iffigurespage
@@ -640,7 +640,7 @@
 
 %%%%%%%
 % Copyright page
-%	if you don't want to have one, put command \copyrightfalse 
+%	if you don't want to have one, put command \copyrightfalse
 %	in your .tex file before you call \beforepreface).
 \def\copyrightpage{
 	\thispagestyle{empty}
@@ -713,10 +713,10 @@
 	\thispagestyle{empty}
 	\titlep
 	\ifcopyright\copyrightpage\fi
-	
+
 	% To prevent warnings about underfull \vbox's.
 	\brokenpenalty=100
-	
+
 	\signaturepage
 }
 
@@ -749,8 +749,8 @@
 	\newpage
 	\begintablespace
 	\tableofcontents
-	
-	
+
+
 	% These lines make a List of Tables page after the Table of Contents
 	% page, iff you include the command '\tablespagetrue' in your '.tex'
 	% file.
@@ -761,7 +761,7 @@
 		\newpage
 		\addcontentsline{toc}{chapter}{\listtablename}
 		\listoftables
-		
+
 	}
 	\fi
 	% These lines make a List of Figures page after the Table of Contents
@@ -776,17 +776,17 @@
 		\newpage
 		\addcontentsline{toc}{chapter}{\listfigurename}
 		\listoffigures
-		
+
 	}
 	\fi
-	
-	
+
+
 	\newpage
 	% add the abbreviations page
 	\thispagestyle{plain}
 	\addcontentsline{toc}{chapter}{\nomname}
 	\printnomenclature
-	
+
 	\newpage
 	% Finally, we want to use double spacing
 	\endtablespace

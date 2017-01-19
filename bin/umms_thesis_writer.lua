@@ -36,7 +36,7 @@ end
 local function attributes(attr)
   local attr_table = {}
   for x,y in pairs(attr) do
-    if y and y ~= "" then
+    if y and y ~= nil then
       table.insert(attr_table, ' ' .. x .. '="' .. escape(y,true) .. '"')
     end
   end
@@ -77,20 +77,20 @@ local testTable = {}
 -- to pandoc, and pandoc will add do the template processing as
 -- usual.
 
--- crm-note: this is called once the document is finished...would be a good time to 
+-- crm-note: this is called once the document is finished...would be a good time to
 -- go through and run any doc level processing that needs to happen
 -- -- maybe adding before and after package and doc parameters etc...
 -- 		- geometry
 -- 		- code highlighting
 -- 		- caption positioning (below, etc.)
---  
+--
 
 -- crm-note: still not sure the distinction between variable and metadata...
 
 -- this function returns what is ultimately put into the document template
 
 function Doc(body, metadata, variables)
-	for _,data in pairs(metadata) do 
+	for _,data in pairs(metadata) do
 --		print(data)
 	end
 	testTable = metadata
@@ -119,7 +119,7 @@ end
 -- Comments indicate the types of other variables.
 
 function Str(s)
-	
+
 --	TODO: why is this here:
 	return s:gsub(" ", "~")
 end
@@ -164,17 +164,17 @@ end
 
 function Link(s, src, tit, attr)
 	-- if an internal link is found
-	-- TODO: figure out this vs cite? and whether to put 
+	-- TODO: figure out this vs cite? and whether to put
 	if string.startswith(src, "#") then
 		src = string.TrimLeft(src, "#")
-		 
+
 		return "\\protect\\hyperlink{" .. src .. "}{" .. s .. "}"
 	else
 		return "\\href{" .. src .. "}{" .. s .."}"
 	end
 end
 
--- for now inline images are not allowed, so inline images 
+-- for now inline images are not allowed, so inline images
 -- are simply insertes as captioned images
 -- nb: we can add inline image support later if this feature is needed
 function Image(s, src, tit, attr)
@@ -205,15 +205,15 @@ end
 
 -- function handles general spans of text (eg: [this is a span]{.small-caps}
 function Span(s, attr)
-	
+
 	-- for small caps
 	if attr.class == "small-caps" then
 		return "\\textsc{" .. s .. "}"
-	
+
 	-- for an abbreviation
 	elseif attr.abbr ~= nil then
 		local buffer = {}
-	
+
 		local abbr = pipe("pandoc -f markdown -t latex", attr.abbr)
 		abbr = abbr:gsub("\n", "")
 
@@ -224,10 +224,10 @@ function Span(s, attr)
 
 	-- for math
 	elseif string.sub(attr.id,1,2) == "eq" then
-	
+
 		local env = "equation"
-		
-		-- if attr.env ~="align", then stip out `\begin{equation}` and `\end{equation}` 
+
+		-- if attr.env ~="align", then stip out `\begin{equation}` and `\end{equation}`
 		-- from any contained equations
 		-- and rearrange a bit so that each equation is on one line with its label, and then
 		-- the line ends with a `\\`
@@ -238,7 +238,7 @@ function Span(s, attr)
 			s = string.gsub(s, "}\n\\end", "} \\\\\\end")	-- put `\\` after label
 			s = string.gsub(s, "\\end{equation}", "")		-- remove \end{equation}
 		end
-	
+
 		local buffer = {}
 		table.insert(buffer, "\\begin{" .. env .. "}")
 		table.insert(buffer, s)
@@ -250,22 +250,22 @@ function Span(s, attr)
 		end
 
 		table.insert(buffer, "\\end{" .. env .. "}")
-		
+
 		-- removes the final `\\` before returning
-		return string.gsub(table.concat(buffer, "\n"), "\\\\\n\\end{", "\n\\end{") 
-		
+		return string.gsub(table.concat(buffer, "\n"), "\\\\\n\\end{", "\n\\end{")
+
 	-- fallthrough
-	else 
+	else
 		--return "\\label{span:" .. attr.id .."}{" .. s .. "}"
 		return "hello"
 	end
-  
+
 end
 
--- this takes the string inside the cite object (md: "[@blah]", 
--- for latex s is the result of RawInline() call on the content "\cite{@blah}"...which is 
+-- this takes the string inside the cite object (md: "[@blah]",
+-- for latex s is the result of RawInline() call on the content "\cite{@blah}"...which is
 -- usually "\\cite{@blah}"
--- cs is the list of citation objects 
+-- cs is the list of citation objects
 function Cite(s, cs)
   local ids = {}
   for _,cit in ipairs(cs) do
@@ -293,7 +293,7 @@ function Header(lev, s, attr)
 		return "\\subsection{"..s.."}\\label{"..attr.id.."}"
 	elseif lev == 4 then
 		return "\\subsubsection{"..s.."}\\label{"..attr.id.."}"
-	elseif lev == 5 then 
+	elseif lev == 5 then
 		return "\\paragraph{"..s.."}\\label{"..attr.id.."}"
 	elseif lev == 6 then
 		return "\\subparagraph{"..s.."}\\label{"..attr.id.."}"
@@ -313,10 +313,10 @@ end
 
 -- if a code block has a class, assume that is the language, and call highlighting-kate
 -- to parse and highlight it
--- otherwise, check to see if it's a latex equation in need of a label 
+-- otherwise, check to see if it's a latex equation in need of a label
 function CodeBlock(s, attr)
 	if attr.class ~= nil then
-		local code = pipe("highlighting-kate -F latex -f -s " .. attr.class, s) 
+		local code = pipe("highlighting-kate -F latex -f -s " .. attr.class, s)
 		return code
 	end
 end
@@ -327,7 +327,7 @@ function BulletList(items)
   for _, item in pairs(items) do
    		table.insert(buffer, "\n\t\\item " .. item)
   end
-  
+
 	return "\\begin{itemize}" .. table.concat(buffer) .. "\n\\end{itemize}"
 end
 
@@ -369,7 +369,7 @@ function CaptionedImage(src, tit, caption, attr)
 
 --	if attr.caption then
 --		if attr.caption == "side" then
---		
+--
 --		elseif attr.caption == "below" then
 --		end
 --	end
@@ -391,18 +391,18 @@ function CaptionedImage(src, tit, caption, attr)
 	else
 		table.insert(buffer, "\\includegraphics[width=\\textwidth]{"..src.."}")
 	end
-	
+
 	-- send the short string through pandoc to process markdown syntax to latex
 	local raw_short = attr.short
 	local latex_short = ""
-	if raw_short ~= "" then
-		
+	if raw_short ~= nil then
+
 		latex_short = pipe("pandoc -f markdown -t latex", raw_short)
 		table.insert(buffer, "\\caption["..latex_short.."]{"..caption.."}")
 	else
 		table.insert(buffer, "\\caption["..caption.."]{"..caption.."}")
 	end
-	
+
 	table.insert(buffer, "\\end{figure}")
 	return table.concat(buffer,'\n')
 
@@ -410,7 +410,7 @@ function CaptionedImage(src, tit, caption, attr)
 -- ffbox figure option:
 --
 --	local buffer = {}
---	
+--
 --	table.insert(buffer, "\\begin{figure}")
 --	table.insert(buffer, "\\ffigbox[\\FBwidth]{")
 --
@@ -429,71 +429,72 @@ end
 -- eg: Table: this is the table caption {title="this is the short caption"}
 function Table(caption, aligns, widths, headers, rows)
 	local table_buffer = {}
-	
+
 	local function add(s)
 		table.insert(table_buffer, s)
 	end
 	 -- \usepackage{booktabs}
 	add("\\begin{tabular}")
 	add("\\toprule")
-	
-	if caption ~= "" then
+
+	if caption ~= nil then
 		add("\\caption{" .. caption .. "}")
 	end
-	
+
 	if widths and widths[1] ~= 0 then
 		for _, w in pairs(widths) do
 			add('<col width="' .. string.format("%d%%", w * 100) .. '" />')
 		end
 	end
-	
+
 	local header_row = {}
 	local empty_header = true
-	
+
 	for i, h in pairs(headers) do
 		local align = html_align(aligns[i])
 		table.insert(header_row,'<th align="' .. align .. '">' .. h .. '</th>')
 		empty_header = empty_header and h == ""
 	end
-	
+
 	if empty_header then
 		head = ""
 	else
 		add('<tr class="header">')
-		
+
 		for _,h in pairs(header_row) do
 			add(h)
 		end
-		
+
 		add('\\')
   	end
-  	
+
 	local class = "even"
-	
-	
+
+
 	for _, row in pairs(rows) do
-		
+
 		local row_buffer = {}
 		for i,c in pairs(row) do
 
 --			add('<td align="' .. html_align(aligns[i]) .. '">' .. c .. '</td>')
-			
-			
+
+
 			-- if we have the first element in row then dont prepend `&`
 			if i == 0 then
 				table.insert(row_buffer, c)
 			else
 				table.insert(row_buffer, "&")
 				table.insert(row_buffer, c)
+			end
     	end
-    	
+
     	table.insert(row_buffer, '\\t\\\\')
-    	add(table.concat(table_buffer, row_buffer)
+    	add(table.concat(table_buffer, row_buffer))
 	end
-	
+
 	add('\\bottomrule')
 	add('\\end{tabular}')
-	
+
 	return table.concat(table_buffer,'\n')
 end
 
@@ -502,16 +503,17 @@ function Div(s, attr)
 end
 
 function RawInline(format, str)
-	if format == "tex" then
+	if format == "tex" or format == "latex" then
+		print(format)
 		return str
-	else 
+	else
 		-- TODO: escape newlines? is this necessary?
 		return "% " .. escape(str)
 	end
 end
 
 function RawBlock(format, str)
-	if format == "tex" then
+	if format == "tex" or format == "latex" then
 		return str
 	else
 		-- TODO: escape newlines? is this necessary?
@@ -533,4 +535,3 @@ meta.__index =
     return function() return "" end
   end
 setmetatable(_G, meta)
-
