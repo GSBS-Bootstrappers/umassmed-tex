@@ -1,6 +1,6 @@
 # UMass Med GSBS PhD Thesis template
 
-see an example here: [demo PDF](https://cdn.rawgit.com/GSBS-Bootstrappers/umassmed-tex/af35d2ae/builds/2017-01-19-19/thesis.pdf)
+see an example here: [demo PDF](https://cdn.rawgit.com/GSBS-Bootstrappers/umassmed-tex/9c7dd022/builds/2017-01-19-19/thesis.pdf)
 
 
 This is a template and compilation pipeline designed to make writing your thesis just a bit less terrible and perhaps even a bit enjoyable.
