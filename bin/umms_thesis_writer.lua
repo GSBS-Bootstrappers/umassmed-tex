@@ -504,7 +504,6 @@ end
 
 function RawInline(format, str)
 	if format == "tex" or format == "latex" then
-		print(format)
 		return str
 	else
 		-- TODO: escape newlines? is this necessary?
