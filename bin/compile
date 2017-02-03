@@ -12,17 +12,20 @@ from time import strftime, localtime
 - open each of these save included text as a variable for pandoc's `-M` flag
 	- eg: -M abstract="the text of the abstract"
 
-- in order, open and add together the other .md files 
+- in order, open and add together the other .md files
 
-- concatenate these together and send to pandoc via a latex custom writer
+- concatenate these together and send to pandoc
+	- pandoc will parse the input files
+	- filter the documnet with the pandoc-citeproc filter, which replaces
+	citations with properly formatted numbers, and inserts at the end a
+	a list of references according to the citation format specified in the
+	`.csl` listed in the metadata.yaml file
+	- generate an output LaTeX document using a LaTeX custom writer
+	- save this latex document in the builds folder under to current date and hour
 
-- run pdflatex several times
+- run pdflatex several times on this latex document
 
 - run makeindex
-
-- run pdflatex several more times
-
-- run pandoc-citeproc (TODO)
 
 - run pdflatex several more times
 
@@ -30,12 +33,15 @@ from time import strftime, localtime
 
 """
 
+# helper function which looks in a directory, reads the metadata.yaml file in the
+#	directory and returns a dictionary of the files to be included in the
+#	dissertation
 def meta_files(dir):
 	files = {}
 	with codecs.open(os.path.join(dir,'metadata.yaml'), encoding='utf-8', mode="r") as meta_file:
 		in_chapters = False
 		for line in meta_file:
-		
+
 			if line.startswith("acknowledgements: "):
 				files["ack"] = line[line.find("acknowledgements: ")+len("acknowledgements:"):].strip()
 			elif line.startswith("dedication: "):
@@ -52,48 +58,76 @@ def meta_files(dir):
 			elif line.startswith("chapters:"):
 				in_chapters = True
 	return files
-	
 
+# helper function which takes a file name, opens it, reads its entire contents,
+#	 and runs it through pandoc to convert any markdown fromatting into LaTeX formatting
+#	 and returns this LaTeX formatted text as a long string
 def file_contents(file_name):
 		raw_text = ""
 		with codecs.open(file_name, encoding='utf-8', mode="r") as in_file:
 			raw_text = in_file.read()
 
-		cmd = "pandoc -t ./bin/umms_thesis_writer.lua" 
-		
+		cmd = "pandoc -t ./bin/umms_thesis_writer.lua"
+
 		p1 = subprocess.Popen(cmd, shell=True, stdin = subprocess.PIPE, stdout=subprocess.PIPE)
 		formatted_text, err = p1.communicate(raw_text)
-		
+		# TODO: check err?
+
 		return formatted_text
-	
+
+# runs the pandoc program on the dissertation source files found in the input directory
+# 	 and writes a latex document with formatted citations into the outpur directory
 def run_pandoc(in_dir, out_dir):
 
 	files = meta_files(in_dir)
-	pandoc_metadata = ['-M', 'abstract="'+file_contents(files["abs"])+'"', 
-		'-M', 'dedication="'+file_contents(files["ded"])+'"',
-		'-M','acknowledgements="'+file_contents(files["ack"])+'"']
-	pandoc_files = files["chaps"]
+	pandoc_metadata = [
+		'-M', 'abstract="' + file_contents(files["abs"]) + '"',
+		'-M', 'dedication="' + file_contents(files["ded"]) + '"',
+		'-M', 'acknowledgements="' + file_contents(files["ack"]) + '"'
+	]
 
-	cmd = "pandoc -t "+in_dir+"/bin/umms_thesis_writer.lua --template="+in_dir+"/bin/umms-thesis-template.tex -o " + out_dir + "/thesis.tex " + " ".join(pandoc_metadata) + " metadata.yaml " + " ".join(pandoc_files)
+	pandoc_chapters = files["chaps"]
+
+	cmd = (
+		"pandoc -t " +
+		in_dir + "/bin/umms_thesis_writer.lua" +
+		" --template=" + in_dir + "/bin/umms-thesis-template.tex" +
+		" --filter pandoc-citeproc" +
+		" -o " + out_dir + "/thesis.tex" +
+		" " + " ".join(pandoc_metadata) +
+		" metadata.yaml " + " ".join(pandoc_chapters)
+	)
 
 	subprocess.call(cmd, shell=True)
 
-def open_build():
-	pass
-	
+
+# runs the xelatex command on the thesis.tex file found in the supplied directory
 def run_pdflatex(out_dir):
-	cmd = "xelatex -interaction=nonstopmode -output-directory="+out_dir+" " +out_dir+"/thesis.tex"
+
+	cmd = (
+		"xelatex" +
+		" -interaction=nonstopmode" +
+		" -output-directory=" + out_dir +
+		" " + out_dir + "/thesis.tex"
+	)
 	p1 = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
 	stdout = p1.communicate()
 
+
+# runs the makeindex command on the thesis.tex file found in the supplied directory
+#	 this command generates the list of abbreviations etc.
 def run_makeindex(dir):
 # 	makeindex build/2016-07-15-210328/test.nlo -s nomencl.ist -o build/2016-07-15-210328/test.nls
-	cmd = "makeindex -q " + dir + "/thesis.nlo -s nomencl.ist -o " +dir+"/thesis.nls " 
+	cmd = "makeindex -q " + dir + "/thesis.nlo -s nomencl.ist -o " +dir+"/thesis.nls "
 	subprocess.call(cmd, shell=True)
 
-def run_bibtex():
-	pass
-	
+# helper function which creates a build/output directory for the resulting dissertation output
+#	the directory is labeled with the current date and hour. Because of this every hour a new
+#	directory is created and populated, leaving the last directory along
+#
+#	nb: this behaviour might not be ideal, but for now it generates versions
+#		ensures some version are kept and not written over during compilation
+#	TODO somehow include the date or version label into the pdf file
 def make_out_dir(pwd):
 
 	build_time = strftime("%Y-%m-%d-%H", localtime())
@@ -106,28 +140,26 @@ def make_out_dir(pwd):
 	except OSError:
 		pass
 	return build_dir
-	
+
 if __name__ == "__main__":
 	pwd = os.getcwd()
+
 	build_dir = make_out_dir(pwd)
+
 	run_pandoc(pwd, build_dir)
-	
+
 	run_pdflatex(build_dir)
-	
+
 	run_pdflatex(build_dir)
-	
+
 	run_makeindex(build_dir)
-	
+
 	run_pdflatex(build_dir)
-	
+
 	run_pdflatex(build_dir)
-	
-	# call bibtext test
-	
-	# TODO: add --filter pandoc-citeprocs and process citatations
-	
+
 	# TODO: internal references? (or just latex \ref{}, \pageref{}
-	
+
 	# TODO: change output dir to temp, then move pdf to compile
-	
+
 	# TODO: add draft information...(version and/or date/time?)
