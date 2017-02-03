@@ -63,7 +63,7 @@
           <text variable="publisher-place" prefix="[" suffix="]"/>
         </if>
         <else-if type="speech"/>
-     <!-- 
+     <!--
    <else>
           <text variable="publisher-place"/>
         </else>
@@ -104,7 +104,7 @@
       <if type="article-journal article-magazine chapter paper-conference article-newspaper" match="any">
         <group suffix="." delimiter=" ">
           <text variable="container-title" form="short" strip-periods="true"/>
-<!-- 
+<!--
           <choose>
             <if variable="URL">
               <text term="internet" prefix="[" suffix="]" text-case="capitalize-first"/>
@@ -242,10 +242,10 @@
     </choose>
   </macro>
   <macro name="pmcid">
-    <text variable="PMCID" prefix=" PMCID: "/>
+    <text variable="PMCID" prefix=" PMCID:&#160;"/>
     <choose>
       <if variable="PMCID" match="none">
-        <text variable="PMID" prefix=" PMID: "/>
+        <text variable="PMID" prefix=" PMID:&#160;"/>
       </if>
 	<!-- TODO: add hyperlink to PMCID repository entry for article -->
 	<!-- TODO: add hyperlink to PMCID repository entry for article -->
@@ -254,7 +254,7 @@
   <macro name="doi">
     <choose>
       <if match="any" variable="DOI">
-        <text variable="DOI" prefix="DOI: "/>
+        <text variable="DOI" prefix="DOI:&#160;"/>
       </if>
     </choose>
   </macro>
@@ -282,7 +282,7 @@
     </layout>
   </citation>
   <bibliography second-field-align="flush">
-  	
+
     <layout>
       <text variable="citation-number" suffix=". "/>
       <group delimiter=". " suffix=". ">
@@ -303,7 +303,7 @@
       <!-- <text macro="access"/> -->
       <text macro="pmcid" suffix=" "/>
       <text macro="doi" suffix=" "/>
- 
+
     </layout>
   </bibliography>
 </style>

@@ -74,16 +74,16 @@
 \renewcommand{\endfigure}{\origendfigure\endsinglespace\newpage}
 
 \let\origtable\table
-\renewcommand{\table}{\newpage\origtable}
+\renewcommand{\table}{\newpage\beginsinglespace\origtable}
 
 \let\origendtable\endtable
-\renewcommand{\endtable}{\origendtable\newpage}
+\renewcommand{\endtable}{\origendtable\endsinglespace\newpage}
 
 \let\origlongtable\longtable
-\renewcommand{\longtable}{\newpage\origlongtable}
+\renewcommand{\longtable}{\newpage\beginsinglespace\origlongtable}
 
 \let\origendlongtable\endlongtable
-\renewcommand{\endlongtable}{\origendlongtable\newpage}
+\renewcommand{\endlongtable}{\origendlongtable\endsinglespace\newpage}
 
 %% harvard.sty - harvard bibliography style Version 2.0.5
 %% Author: Peter Williams peterw@archsci.arch.su.edu.au

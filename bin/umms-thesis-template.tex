@@ -30,7 +30,7 @@
 \usepackage{fancyvrb}
 \newcommand{\VerbBar}{|}
 \newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}, baselinestretch=0.9}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}, baselinestretch=1}
 % Add ',fontsize=\small' for more characters per line
 \newenvironment{Shaded}{}{}
 \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
@@ -66,14 +66,19 @@
 \newcommand{\NormalTok}[1]{{#1}}
 
 \usepackage[normalem]{ulem}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}	% actually loads the colortbl package for its commands
+
+\usepackage{caption}
+\captionsetup[table]{skip=10pt}
 
 \begin{document}
 	%\tablespagefalse
 	%\figurespagefalse
 	\copyrightfalse
-	
+
 	\beforepreface
-	
+
 	\clearpage
 	\thispagestyle{empty}
 	\begin{dedication}
@@ -85,17 +90,17 @@
  			\end{minipage}
  		\end{center}
 	\end{dedication}
-	
+
 	\prefacesection{Acknowledgements}
 		$acknowledgements$
-	
+
 	\prefacesection{Abstract}
  		$abstract$
-	
+
 	\afterpreface
 
 	$body$
-	
-	\evnbib{thesis_bibliography}
+
+	% \evnbib{thesis_bibliography}
 
 \end{document}

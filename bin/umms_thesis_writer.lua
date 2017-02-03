@@ -133,7 +133,7 @@ function SoftBreak()
 end
 
 function LineBreak()
-  return "\\newline"
+  return "\\\\\\n "
 end
 
 function Emph(s)
@@ -165,8 +165,10 @@ end
 function Link(s, src, tit, attr)
 	-- if an internal link is found
 	-- TODO: figure out this vs cite? and whether to put
-	if string.startswith(src, "#") then
-		src = string.TrimLeft(src, "#")
+
+	-- if the reference link begins with a "#"
+	if string.find(src, "#") == 1 then
+		src = string.sub(src, 2)
 
 		return "\\protect\\hyperlink{" .. src .. "}{" .. s .. "}"
 	else
@@ -267,12 +269,14 @@ end
 -- usually "\\cite{@blah}"
 -- cs is the list of citation objects
 function Cite(s, cs)
-  local ids = {}
-  for _,cit in ipairs(cs) do
-    table.insert(ids, cit.citationId)
-    -- Question: what else is in this 'cit' object?
-  end
-  return "\\cite{" .. table.concat(ids, ",") .."}"
+  -- local ids = {}
+  -- print(s)
+  -- print(cs)
+  -- for _,cit in ipairs(cs) do
+  --   table.insert(ids, cit.citationId)
+  --   -- Question: what else is in this 'cit' object?
+  -- end
+  return s
 end
 
 function Plain(s)
@@ -499,7 +503,20 @@ function Table(caption, aligns, widths, headers, rows)
 end
 
 function Div(s, attr)
-  return "<div" .. attributes(attr) .. ">\n" .. s .. "</div>"
+	if attr.id == "refs" then
+		local buffer = {}
+		table.insert(buffer, "\\chapter{References}")
+		table.insert(buffer, "\\setlength{\\parindent}{0pt} % Reset indentation for references...")
+		table.insert(buffer, "\\small")
+		table.insert(buffer, "\\beginsinglespace")
+		table.insert(buffer, "\\raggedright")
+		table.insert(buffer, "\\setlength{\\parskip}{0.3cm}")
+		table.insert(buffer, s)
+		return  table.concat(buffer, "\n")
+
+	elseif string.find(attr.id, "ref") == 1 then
+		return "\\hangindent=1.25em \n\\hangafter=1 \n\\hypertarget{" .. attr.id .. "}{}" .. s
+	end
 end
 
 function RawInline(format, str)
