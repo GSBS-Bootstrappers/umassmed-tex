@@ -319,10 +319,26 @@ end
 -- to parse and highlight it
 -- otherwise, check to see if it's a latex equation in need of a label
 function CodeBlock(s, attr)
+	local buffer = {}
+
 	if attr.class ~= nil then
-		local code = pipe("highlighting-kate -F latex -f -s " .. attr.class, s)
-		return code
+		table.insert(buffer, "```" .. attr.class)
+	else
+		table.insert(buffer, "```")
 	end
+
+	table.insert(buffer, s)
+	table.insert("```")
+
+	local code = pipe("pandoc -t latex -f markdown", s)
+
+	table.insert(buffer, code)
+
+	local md_code = table.concat(buffer, "\n")
+
+	local code = pipe("pandoc -f latex -f markdown", md_code)
+
+	return code
 end
 
 function BulletList(items)
