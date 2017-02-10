@@ -209,6 +209,10 @@ header-includes:
 ---
 ```
 
+```
+
+```
+
 <!-- **NOTE*: still under development - haven't figured out how to properly address labels yet*
 
 The above examples result in the standard LaTeX `equation` environment. If you need a different environment, like `align` or `gather`, or something else, you can get it. This is a prototype of how it could work:

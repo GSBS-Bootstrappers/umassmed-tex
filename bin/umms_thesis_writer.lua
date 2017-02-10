@@ -328,15 +328,12 @@ function CodeBlock(s, attr)
 	end
 
 	table.insert(buffer, s)
-	table.insert("```")
 
-	local code = pipe("pandoc -t latex -f markdown", s)
-
-	table.insert(buffer, code)
+	table.insert(buffer, "```")
 
 	local md_code = table.concat(buffer, "\n")
 
-	local code = pipe("pandoc -f latex -f markdown", md_code)
+	local code = pipe("pandoc -f markdown -t latex", md_code)
 
 	return code
 end
