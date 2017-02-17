@@ -26,7 +26,10 @@
 % TODO: put this in the style file
 
 $if(draft)$
+\drafttrue
 \draftversion{$draftversion$}
+$else$
+\draftfalse
 $endif$
 
 \usepackage{color}
