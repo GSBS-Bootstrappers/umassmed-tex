@@ -41,7 +41,7 @@
 \RequirePackage{fancyhdr}
 \pagestyle{fancy}
 \lhead{}
-\chead{}
+\chead{{\color{red}\textbf{Draft} version: \@draftversion}}
 \rhead{\thepage}
 \lfoot{}
 \cfoot{}
@@ -51,7 +51,7 @@
 
 %for insert pictures, picture should put in subfolder named as fig
 \RequirePackage{graphicx}
-\graphicspath{{./fig/}}
+\graphicspath{{figs/}}
 
 \RequirePackage{afterpage}
 
@@ -68,22 +68,22 @@
 % include a `\newpage` command before and after
 %    also switches to singlespacing for figure legends, and then switches back after
 \let\origfigure\figure
-\renewcommand{\figure}{\newpage\beginsinglespace\origfigure}
+\renewcommand{\figure}{\beginsinglespace\origfigure}
 
 \let\origendfigure\endfigure
-\renewcommand{\endfigure}{\origendfigure\endsinglespace\newpage}
+\renewcommand{\endfigure}{\origendfigure\endsinglespace}
 
 \let\origtable\table
-\renewcommand{\table}{\newpage\beginsinglespace\origtable}
+\renewcommand{\table}{\beginsinglespace\origtable}
 
 \let\origendtable\endtable
-\renewcommand{\endtable}{\origendtable\endsinglespace\newpage}
+\renewcommand{\endtable}{\origendtable\endsinglespace}
 
 \let\origlongtable\longtable
-\renewcommand{\longtable}{\newpage\beginsinglespace\origlongtable}
+\renewcommand{\longtable}{\beginsinglespace\origlongtable}
 
 \let\origendlongtable\endlongtable
-\renewcommand{\endlongtable}{\origendlongtable\endsinglespace\newpage}
+\renewcommand{\endlongtable}{\origendlongtable\endsinglespace}
 
 %% harvard.sty - harvard bibliography style Version 2.0.5
 %% Author: Peter Williams peterw@archsci.arch.su.edu.au
@@ -332,6 +332,7 @@
 }
 
 \def\section{
+	\clearpage
 	\ifnum \c@section=\z@         % If first section of a chapt.
 		%% then separate it from the chapter heading by x-pt
 		\addtocontents{toc}{\protect\addvspace{.2\baselineskip}}
@@ -554,6 +555,8 @@
 \def\school#1{\gdef\@school{#1}}
 \def\depaddr#1{\gdef\@depaddr{#1}}
 
+\def\draftversion#1{\gdef\@draftversion{#1}}
+
 % Those are the things you should define in your thesis:
 \def\@title{}
 \def\@author{}
@@ -567,6 +570,7 @@
 \def\@thesisadvisor{}
 \def\@school{the Graduate School of Biomedical Sciences}	% default
 \def\@depaddr{University of Massachusetts Graduate School of Biomedical Sciences, Worcester, MA} % default
+\def\@draftversion{}
 
 % If \copyrightdate are not defined in .tex files, LaTeX
 % computes them from \today. For UMass, this should be either
@@ -605,10 +609,16 @@
 % After that, we use arabic numerals:
 %
 
+\fancypagestyle{firststyle}
+{
+   \fancyhf{}
+   \fancyhead[C]{{\color{red} \textbf{Draft:} version: \@draftversion}}
+}
+
 %%%%%%%
 % Title page
 \def\titlep{
-	\thispagestyle{empty}%
+	\thispagestyle{firststyle}%
 	\null\vskip0.3in%
 	\begin{center}{
 		\LARGE\bf\uppercase\expandafter{\@title}
@@ -643,7 +653,7 @@
 %	if you don't want to have one, put command \copyrightfalse
 %	in your .tex file before you call \beforepreface).
 \def\copyrightpage{
-	\thispagestyle{empty}
+	\thispagestyle{firststyle}
 	\null\vfill
 	\begin{center}
 		\copyright\ Copyright by \rm{\@author} \@copyrightyear\\
@@ -660,7 +670,7 @@
 %	may give a list of warnings on compilation
 %	which are annoying but harmless
 \def\signaturepage{
-	\thispagestyle{empty}
+	\thispagestyle{firststyle}
 	\begin{center}
 		{\normalsize\bf\uppercase\expandafter{\@title}}\\
 		\footnotesize
@@ -710,7 +720,7 @@
 % This makes the title, copyright, and signature pages.
 \def\beforepreface{
 	\pagenumbering{roman}
-	\thispagestyle{empty}
+	\thispagestyle{firststyle}
 	\titlep
 	\ifcopyright\copyrightpage\fi
 
@@ -732,7 +742,7 @@
 	% removed change to uppercase
 	% \chapter*{\bf \protect\uppercase{#1}}
 	\chapter*{\bf \protect{#1}}
-	\thispagestyle{plain}
+	\thispagestyle{firststyle}
 	% removed change to uppercase
 	% \addcontentsline{toc}{chapter}{\texorpdfstring{\protect\uppercase{#1}}{#1}}
 	\addcontentsline{toc}{chapter}{\texorpdfstring{\protect{#1}}{#1}}

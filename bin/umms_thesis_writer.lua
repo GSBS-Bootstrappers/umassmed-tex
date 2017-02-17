@@ -289,21 +289,27 @@ end
 
 -- lev is an integer, the header level.
 function Header(lev, s, attr)
+	local buffer = {}
 	if lev == 1 then
-		return "\\chapter{"..s.."}\\label{"..attr.id.."}"
+		table.insert(buffer, "\\chapter{"..s.."}")
 	elseif lev == 2 then
-		return "\\section{"..s.."}\\label{"..attr.id.."}"
+		table.insert(buffer, "\\section{"..s.."}")
 	elseif lev == 3 then
-		return "\\subsection{"..s.."}\\label{"..attr.id.."}"
+		table.insert(buffer, "\\subsection{"..s.."}")
 	elseif lev == 4 then
-		return "\\subsubsection{"..s.."}\\label{"..attr.id.."}"
+		table.insert(buffer, "\\subsubsection{"..s.."}")
 	elseif lev == 5 then
-		return "\\paragraph{"..s.."}\\label{"..attr.id.."}"
+		table.insert(buffer, "\\paragraph{"..s.."}")
 	elseif lev == 6 then
-		return "\\subparagraph{"..s.."}\\label{"..attr.id.."}"
+		table.insert(buffer, "\\subparagraph{"..s.."}")
 	else
 		return error
 	end
+	if attr.id ~= nil then
+		table.insert(buffer, "\\label{"..attr.id.."}")
+	end
+	return table.concat(buffer, "")
+
 end
 
 function BlockQuote(s)
@@ -394,9 +400,11 @@ function CaptionedImage(src, tit, caption, attr)
 --		this is the standard figure option:
 --
 	local buffer = {}
-	table.insert(buffer, "\\begin{figure}[h!]")
+	table.insert(buffer, "\\begin{figure}[p]")
 	table.insert(buffer, "\\centering")
-	table.insert(buffer, "\\label{"..attr.id.."}")
+	if attr.id ~= "" and attr.id ~= nil then
+		table.insert(buffer, "\\label{"..attr.id.."}")
+	end
 	if attr.draft == "true" then
 		table.insert(buffer, [[\centering
   \fbox{
@@ -406,7 +414,7 @@ function CaptionedImage(src, tit, caption, attr)
   }
   ]])
 	else
-		table.insert(buffer, "\\includegraphics[width=\\textwidth]{"..src.."}")
+		table.insert(buffer, "\\includegraphics[width=\\textwidth, height=\\textheight, keepaspectratio]{"..src.."}")
 	end
 
 	-- send the short string through pandoc to process markdown syntax to latex

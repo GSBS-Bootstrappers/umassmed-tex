@@ -25,6 +25,9 @@
 % commands for code highlighting, required for pandoc code blocks:
 % TODO: put this in the style file
 
+$if(draft)$
+\draftversion{$draftversion$}
+$endif$
 
 \usepackage{color}
 \usepackage{fancyvrb}
@@ -71,6 +74,17 @@
 
 \usepackage{caption}
 \captionsetup[table]{skip=10pt}
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+
+% this changes the float separation parameter, to ensure that every float (figure or table)
+% appears alone on its own page
+\makeatletter
+\@fpsep\textheight
+\makeatother
 
 \begin{document}
 	%\tablespagefalse

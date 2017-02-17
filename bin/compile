@@ -54,7 +54,7 @@ def meta_files(dir):
 						files["chaps"] = [line.lstrip("- ").strip()]
 					else:
 						files["chaps"] += [line.lstrip("- ").strip()]
-				else: in_contents = False
+				else: in_chapters = False
 			elif line.startswith("chapters:"):
 				in_chapters = True
 	return files
@@ -83,7 +83,8 @@ def run_pandoc(in_dir, out_dir):
 	pandoc_metadata = [
 		'-M', 'abstract="' + file_contents(files["abs"]) + '"',
 		'-M', 'dedication="' + file_contents(files["ded"]) + '"',
-		'-M', 'acknowledgements="' + file_contents(files["ack"]) + '"'
+		'-M', 'acknowledgements="' + file_contents(files["ack"]) + '"',
+		'-V', 'draftversion="' + strftime("%Y-%m-%d-%H", localtime()) + '"'
 	]
 
 	pandoc_chapters = files["chaps"]
