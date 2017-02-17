@@ -77,6 +77,11 @@
 }
 
 
+% these commands center the titles for the TOC, LOF, and LOT
+\renewcommand{\contentsname}{\hfill\bfseries\Large Contents\hfill}
+\renewcommand{\listfigurename}{\hfill\bfseries\Large List of Figures\hfill}
+\renewcommand{\listtablename}{\hfill\bfseries\Large List of Tables\hfill}
+
 %for insert pictures, picture should put in subfolder named as fig
 \RequirePackage{graphicx}
 \graphicspath{{figs/}}
@@ -795,7 +800,7 @@
 	% \addtocontents{lot}{\protect Table \hfill Page
 	% \addvspace{\baselineskip}}  %% MLS 041896
 		\newpage
-		\addcontentsline{toc}{chapter}{\listtablename}
+		\addcontentsline{toc}{chapter}{List of Tables}
 		\listoftables
 
 	}
@@ -810,7 +815,7 @@
 
 		% adds the list of figures to the table of contents
 		\newpage
-		\addcontentsline{toc}{chapter}{\listfigurename}
+		\addcontentsline{toc}{chapter}{List of Figures}
 		\listoffigures
 
 	}

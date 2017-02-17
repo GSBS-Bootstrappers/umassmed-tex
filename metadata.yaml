@@ -2,9 +2,9 @@
 title: This is a cool thesis title that sounds very impressive
 author: ROSALIND A. MacCARTHY
 submit-date: January 1, 2016
-grad-program: Interdisciplinary Graduate Program 
+grad-program: Interdisciplinary Graduate Program
 
-bibliography: bibliography.bib
+bibliography: thesis_bibliography.bib
 
 committee-chair: John Smith, Ph.D.
 first-reader: John Smith, Ph.D.
@@ -16,10 +16,10 @@ outside-reader-institution: University of Westeros
 advisor: John Smith, Ph.D.
 school-dean: John Smith, Ph.D.
 
-license: This work is licensed under the <blank> licence. 
+license: This work is licensed under the <blank> licence.
 
 # csl file
-citation-style: resources/national-library-of-medicine-grant-proposals+pmcid+doi.csl
+citation-style: bin/national-library-of-medicine-grant-proposals+pmcid+doi.csl
 
 # here we identify each of font-matter files
 acknowledgements: acknowledgements.md
@@ -27,10 +27,11 @@ dedication: dedication.md
 abstract: abstract.md
 
 # the outline tells the compiler which files are your chapters, and in which order to include them
-chapters: 
+chapters:
 - introduction.md
 - chapter1.md
 - chapter2.md
 - chapter3.md
 
+draft: true
 ---
