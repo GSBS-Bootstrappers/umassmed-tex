@@ -49,7 +49,7 @@ def meta_files(dir):
 			elif line.startswith("abstract: "):
 				files["abs"] = line[line.find("abstract: ")+len("abstract: "):].strip()
 			elif in_chapters == True:
-				if line.startswith("- "):
+				if line.lstrip().startswith("- "):
 					if "chaps" not in files:
 						files["chaps"] = [line.lstrip("- ").strip()]
 					else:

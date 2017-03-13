@@ -5,10 +5,12 @@
 -- HTML Character escaping
 -- TODO: add latex character escaping (if necessary?)
 local function escape(s, in_attribute)
-	return s:gsub("[\n]",
+	return s:gsub("[\n&]",
 		function(x)
 			if x == '\n' then
 				return '\n%'
+			elseif x == '&' then
+				return [[\&]]
 			end
 		end)
 -- return s:gsub("[<>&\\\"']",
@@ -220,7 +222,7 @@ function Span(s, attr)
 		abbr = abbr:gsub("\n", "")
 
 		table.insert(buffer, s)
-		table.insert(buffer, " ")
+		table.insert(buffer, "")
 		table.insert(buffer, "\\nomenclature{"..s.."}{" .. abbr .. "}")
 		return table.concat(buffer,'')
 
@@ -389,7 +391,7 @@ function html_align(align)
 end
 
 function CaptionedImage(src, tit, caption, attr)
-
+	local esc_caption = escape(caption)
 --	if attr.caption then
 --		if attr.caption == "side" then
 --
@@ -402,9 +404,7 @@ function CaptionedImage(src, tit, caption, attr)
 	local buffer = {}
 	table.insert(buffer, "\\begin{figure}[p]")
 	table.insert(buffer, "\\centering")
-	if attr.id ~= "" and attr.id ~= nil then
-		table.insert(buffer, "\\label{"..attr.id.."}")
-	end
+
 	if attr.draft == "true" then
 		table.insert(buffer, [[\centering
   \fbox{
@@ -423,9 +423,12 @@ function CaptionedImage(src, tit, caption, attr)
 	if raw_short ~= nil then
 
 		latex_short = pipe("pandoc -f markdown -t latex", raw_short)
-		table.insert(buffer, "\\caption["..latex_short.."]{"..caption.."}")
+		table.insert(buffer, "\\caption["..latex_short.."]{"..esc_caption.."}")
 	else
-		table.insert(buffer, "\\caption["..caption.."]{"..caption.."}")
+		table.insert(buffer, "\\caption["..esc_caption.."]{"..esc_caption.."}")
+	end
+	if attr.id ~= "" and attr.id ~= nil then
+		table.insert(buffer, "\\label{"..attr.id.."}")
 	end
 
 	table.insert(buffer, "\\end{figure}")

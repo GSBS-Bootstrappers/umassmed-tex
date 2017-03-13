@@ -28,10 +28,10 @@ abstract: abstract.md
 
 # the outline tells the compiler which files are your chapters, and in which order to include them
 chapters:
-- introduction.md
-- chapter1.md
-- chapter2.md
-- chapter3.md
+    - introduction.md
+    - chapter1.md
+    - chapter2.md
+    - chapter3.md
 
 draft: true
 ---

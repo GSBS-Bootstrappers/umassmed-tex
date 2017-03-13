@@ -24,8 +24,6 @@
 	\outsidereader{$outside-reader$~($outside-reader-institution$)}
 	\schooldean{$school-dean$}
 
-% commands for code highlighting, required for pandoc code blocks:
-% TODO: put this in the style file
 
 $if(draft)$
 \drafttrue
@@ -34,6 +32,9 @@ $else$
 \draftfalse
 $endif$
 
+
+% commands for code highlighting, required for pandoc code blocks:
+% TODO: put this in the style file
 \usepackage{color}
 \usepackage{fancyvrb}
 \newcommand{\VerbBar}{|}
@@ -119,7 +120,5 @@ $endfor$
 	\afterpreface
 
 	$body$
-
-	% \evnbib{thesis_bibliography}
 
 \end{document}
