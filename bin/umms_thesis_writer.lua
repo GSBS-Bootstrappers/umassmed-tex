@@ -2,8 +2,8 @@
 
 -- work in progress for more details see: https://github.com/GSBS-Bootstrappers/umassmed-tex
 
--- HTML Character escaping
--- TODO: add latex character escaping (if necessary?)
+-- LaTeX Character escaping
+-- TODO: add replacement of "..." with ``...''
 local function escape(s, in_attribute)
 	return s:gsub("[\n&]",
 		function(x)
@@ -13,24 +13,6 @@ local function escape(s, in_attribute)
 				return [[\&]]
 			end
 		end)
--- return s:gsub("[<>&\\\"']",
---   function(x)
---     if x == '<' then
---       return '&lt;'
---     elseif x == '>' then
---       return '&gt;'
---     elseif x == '&' then
---       return '&amp;'
---     elseif x == '"' then
---       return '&quot;'
---     elseif x == "'" then
---       return '&#39;'
---     elseif x == "\\" then
---     	return '&#92;'
---     else
---       return x
---     end
---   end)
 end
 
 -- Helper function to convert an attributes table into
@@ -135,7 +117,7 @@ function SoftBreak()
 end
 
 function LineBreak()
-  return "\\\\\\n "
+  return "\\\\\n "
 end
 
 function Emph(s)
@@ -191,7 +173,7 @@ end
 
 -- inline code (example: here is some`code`)
 function Code(s, attr)
-  return "\\text{" .. s .. "}"
+  return "\\texttt{" .. s .. "}"
 end
 
 function InlineMath(s)
@@ -402,8 +384,9 @@ function CaptionedImage(src, tit, caption, attr)
 --		this is the standard figure option:
 --
 	local buffer = {}
-	table.insert(buffer, "\\begin{figure}[p]")
-	table.insert(buffer, "\\centering")
+	table.insert(buffer, "\\afterpage{%")
+	table.insert(buffer, "\\begin{figure}[p]%")
+	table.insert(buffer, "\\centering%")
 
 	if attr.draft == "true" then
 		table.insert(buffer, [[\centering
@@ -414,7 +397,7 @@ function CaptionedImage(src, tit, caption, attr)
   }
   ]])
 	else
-		table.insert(buffer, "\\includegraphics[width=\\textwidth, height=\\textheight, keepaspectratio]{"..src.."}")
+		table.insert(buffer, "\\includegraphics[width=\\textwidth, height=\\textheight, keepaspectratio]{"..src.."}%")
 	end
 
 	-- send the short string through pandoc to process markdown syntax to latex
@@ -423,15 +406,17 @@ function CaptionedImage(src, tit, caption, attr)
 	if raw_short ~= nil then
 
 		latex_short = pipe("pandoc -f markdown -t latex", raw_short)
-		table.insert(buffer, "\\caption["..latex_short.."]{"..esc_caption.."}")
+		table.insert(buffer, "\\caption["..latex_short.."]{"..esc_caption.."}%")
 	else
-		table.insert(buffer, "\\caption["..esc_caption.."]{"..esc_caption.."}")
+		table.insert(buffer, "\\caption["..esc_caption.."]{"..esc_caption.."}%")
 	end
 	if attr.id ~= "" and attr.id ~= nil then
-		table.insert(buffer, "\\label{"..attr.id.."}")
+		table.insert(buffer, "\\label{"..attr.id.."}%")
 	end
 
-	table.insert(buffer, "\\end{figure}")
+	table.insert(buffer, "\\end{figure}%")
+	table.insert(buffer, "\\clearpage")
+	table.insert(buffer, "}")  -- close \afterpage{}
 	return table.concat(buffer,'\n')
 
 
@@ -453,51 +438,113 @@ end
 -- Caption is a string, aligns is an array of strings,
 -- widths is an array of floats, headers is an array of
 -- strings, rows is an array of arrays of strings.
--- TODO: add parsing of the caption to look for an attribute string, with a title in it
--- eg: Table: this is the table caption {title="this is the short caption"}
+-- Caption may also have an attribute string with an id and a short caption:
+-- 		:this is a caption {#tab:my-id short="this is a short caption"}
 function Table(caption, aligns, widths, headers, rows)
 	local table_buffer = {}
+
+	local tab_attr = {}
+
+	-- get_attr() parses a caption string, and tries to find an attribute string
+	-- 	example:	('{#tab:my-table short="this is a short caption"}')
+	-- then extracts the id and short caption. other attributes or classes are ignored for now.
+	local function get_attr(s)
+		local new_caption =""
+		local my_attr = {}
+		local attr_str = ""
+		if string.find(s, "[ \n]{.+}") then
+			attr_str = string.match(s, '[ \n]{(.+)}')
+			new_caption = s:sub(1,s:find('[ \n]{(.+)}'))
+		else
+			return(nil)
+		end
+		if attr_str ~= nil then
+			my_attr.short = string.match(attr_str, 'short="(.+)"')
+			if string.find(attr_str, "#") then
+				index_start, _ = string.find(attr_str, "#")
+				first_space, _ = string.find(attr_str, " ")
+				my_attr.id = string.match(attr_str:sub(index_start, first_space), '#(.+) ')
+			else
+				my_attr.id = nil
+			end
+		end
+
+		return new_caption, my_attr
+	end
+
+	caption, tab_attr = get_attr(caption)
 
 	local function add(s)
 		table.insert(table_buffer, s)
 	end
+
+	add("\\afterpage{%")
 	 -- \usepackage{booktabs}
-	add("\\begin{tabular}")
-	add("\\toprule")
+	add("\\begin{table}[p]%")
+	add("\\centering%")
 
+	-- this is very fragile, trying to deal with some or all of these attributes being potentially
+	-- absent TODO: refactor somehow
 	if caption ~= nil then
-		add("\\caption{" .. caption .. "}")
-	end
+		if tab_attr ~= nil then
+			if tab_attr.id ~= nil then
+				if tab_attr.short ~= nil then
+					add("\\caption[" .. tab_attr.short .. "]{" .. caption .. "}%")
 
-	if widths and widths[1] ~= 0 then
-		for _, w in pairs(widths) do
-			add('<col width="' .. string.format("%d%%", w * 100) .. '" />')
+				else
+					add("\\caption{" .. caption .. "}%")
+
+				end
+
+				add("\\label{".. tab_attr.id .. "}%")
+							end
+		else
+			add("\\caption{" .. caption .. "}%")
 		end
 	end
+	add("\\scriptsize%")
+	-- todo add tabular alignment markers
+	align_buffer = {}
+	for i,p in pairs(aligns) do
+		if aligns[i] == "AlignLeft" then
+			table.insert(align_buffer, "l")
+		elseif aligns[i] == "AlignRight" then
+			table.insert(align_buffer, "r")
+		else
+			table.insert(align_buffer, "c")
+		end
+	end
+	local aligns = table.concat(align_buffer, "")
+	add("\\begin{tabular}{"..aligns.."}%")
+	add("\\toprule%")
+
+
+
+	-- if widths and widths[1] ~= 0 then
+	-- 	for _, w in pairs(widths) do
+	-- 		add('<col width="' .. string.format("%d%%", w * 100) .. '" />')
+	-- 	end
+	-- end
 
 	local header_row = {}
 	local empty_header = true
 
 	for i, h in pairs(headers) do
-		local align = html_align(aligns[i])
-		table.insert(header_row,'<th align="' .. align .. '">' .. h .. '</th>')
-		empty_header = empty_header and h == ""
+		if i == 1 then
+			table.insert(header_row, h)
+		else
+			table.insert(header_row, "&" .. h)
+		end
+		-- empty_header = empty_header and h == "&
 	end
 
 	if empty_header then
 		head = ""
-	else
-		add('<tr class="header">')
+	end
+	table.insert(header_row, "\\\\")
+	add(table.concat(header_row, ""))
 
-		for _,h in pairs(header_row) do
-			add(h)
-		end
-
-		add('\\')
-  	end
-
-	local class = "even"
-
+	add('\\midrule%')
 
 	for _, row in pairs(rows) do
 
@@ -508,7 +555,7 @@ function Table(caption, aligns, widths, headers, rows)
 
 
 			-- if we have the first element in row then dont prepend `&`
-			if i == 0 then
+			if i == 1 then
 				table.insert(row_buffer, c)
 			else
 				table.insert(row_buffer, "&")
@@ -516,13 +563,15 @@ function Table(caption, aligns, widths, headers, rows)
 			end
     	end
 
-    	table.insert(row_buffer, '\\t\\\\')
-    	add(table.concat(table_buffer, row_buffer))
+    	table.insert(row_buffer, '\t\\\\')
+    	add(table.concat(row_buffer, ""))
 	end
 
-	add('\\bottomrule')
-	add('\\end{tabular}')
-
+	add('\\bottomrule%')
+	add('\\end{tabular}%')
+	add('\\end{table}%')
+	add("\\clearpage%")
+	add("}")
 	return table.concat(table_buffer,'\n')
 end
 
@@ -548,7 +597,7 @@ function RawInline(format, str)
 		return str
 	else
 		-- TODO: escape newlines? is this necessary?
-		return "% " .. escape(str)
+		return "% " .. escape(str).."\n"
 	end
 end
 
@@ -557,12 +606,12 @@ function RawBlock(format, str)
 		return str
 	else
 		-- TODO: escape newlines? is this necessary?
-		return "% " .. escape(str)
+		return "% " .. escape(str) .. "\n"
 	end
 end
 
 function LineBlock(ls)
-	return table.concat(ls, '\\ \\n')
+	return table.concat(ls, '\\ \n')
 end
 
 -- The following code will produce runtime warnings when you haven't defined

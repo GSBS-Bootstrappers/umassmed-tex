@@ -2,6 +2,7 @@
 
 import codecs, os, subprocess
 from time import strftime, localtime
+import argparse
 
 """ workflow:
 
@@ -30,6 +31,11 @@ from time import strftime, localtime
 - run pdflatex several more times
 
 - TODO: add idempotent test (only run pdflatex until no more changes are made to it's source files)
+
+- TODO: add command line option to build one chapter (eg: $./bin/compile --chapter=1) or -c 1
+	- argparse
+	- set padoc variable chapter-only to true
+	- only put chapter number X into the body
 
 """
 
@@ -77,7 +83,7 @@ def file_contents(file_name):
 
 # runs the pandoc program on the dissertation source files found in the input directory
 # 	 and writes a latex document with formatted citations into the outpur directory
-def run_pandoc(in_dir, out_dir):
+def run_pandoc(in_dir, out_dir, chapters_only=False, chapter_num=0):
 
 	files = meta_files(in_dir)
 	pandoc_metadata = [
@@ -87,14 +93,25 @@ def run_pandoc(in_dir, out_dir):
 		'-V', 'draftversion="' + strftime("%Y-%m-%d-%H", localtime()) + '"'
 	]
 
-	pandoc_chapters = files["chaps"]
+
+	out_file_name = "thesis.tex"
+
+	if chapters_only:
+		# include just the chapter asked for
+		pandoc_chapters = [files["chaps"][chapter_num-1]]
+		pandoc_metadata.append('-V chapter-num='+str(chapter_num-1))
+		out_file_name = "chapter-" + str(chapter_num) + ".tex"
+
+	else:
+		# include all chapters
+		pandoc_chapters = files["chaps"]
 
 	cmd = (
 		"pandoc -t " +
 		in_dir + "/bin/umms_thesis_writer.lua" +
 		" --template=" + in_dir + "/bin/umms-thesis-template.tex" +
 		" --filter pandoc-citeproc" +
-		" -o " + out_dir + "/thesis.tex" +
+		" -o " + out_dir + "/" + out_file_name +
 		" " + " ".join(pandoc_metadata) +
 		" metadata.yaml " + " ".join(pandoc_chapters)
 	)
@@ -103,13 +120,13 @@ def run_pandoc(in_dir, out_dir):
 
 
 # runs the xelatex command on the thesis.tex file found in the supplied directory
-def run_pdflatex(out_dir):
+def run_pdflatex(out_dir, out_file_name):
 
 	cmd = (
 		"xelatex" +
 		" -interaction=nonstopmode" +
 		" -output-directory=" + out_dir +
-		" " + out_dir + "/thesis.tex"
+		" " + out_dir + "/" + out_file_name + ".tex"
 	)
 	p1 = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
 	stdout = p1.communicate()
@@ -117,9 +134,9 @@ def run_pdflatex(out_dir):
 
 # runs the makeindex command on the thesis.tex file found in the supplied directory
 #	 this command generates the list of abbreviations etc.
-def run_makeindex(dir):
+def run_makeindex(dir, out_file_name):
 # 	makeindex build/2016-07-15-210328/test.nlo -s nomencl.ist -o build/2016-07-15-210328/test.nls
-	cmd = "makeindex -q " + dir + "/thesis.nlo -s nomencl.ist -o " +dir+"/thesis.nls "
+	cmd = "makeindex -q " + dir + "/" + out_file_name + ".nlo -s nomencl.ist -o " +dir+"/" + out_file_name + ".nls "
 	subprocess.call(cmd, shell=True)
 
 # helper function which creates a build/output directory for the resulting dissertation output
@@ -142,24 +159,42 @@ def make_out_dir(pwd):
 		pass
 	return build_dir
 
+def parse_the_args():
+	parser = argparse.ArgumentParser(description='compile your thesis')
+	parser.add_argument('-c', '--chapter', type=int, help='the number of the chapter to compile, turns on "chapter-only" compilation')
+	args = parser.parse_args()
+
+	if args.chapter != None :
+		return(True, args.chapter)
+	else:
+		return(False, 0)
+
 if __name__ == "__main__":
+
+	chapter_only, chapter_num = parse_the_args()
+
 	pwd = os.getcwd()
 
 	build_dir = make_out_dir(pwd)
 
-	run_pandoc(pwd, build_dir)
+	out_file_name = "thesis"
 
-	run_pdflatex(build_dir)
+	if chapter_only:
+		run_pandoc(pwd, build_dir, True, chapter_num)
+		out_file_name = "chapter-" + str(chapter_num)
 
-	run_pdflatex(build_dir)
+	else:
+		run_pandoc(pwd, build_dir)
 
-	run_makeindex(build_dir)
+	run_pdflatex(build_dir, out_file_name)
 
-	run_pdflatex(build_dir)
+	run_pdflatex(build_dir, out_file_name)
 
-	run_pdflatex(build_dir)
+	run_makeindex(build_dir, out_file_name)
 
-	# TODO: internal references? (or just latex \ref{}, \pageref{}
+	run_pdflatex(build_dir, out_file_name)
+
+	run_pdflatex(build_dir, out_file_name)
 
 	# TODO: change output dir to temp, then move pdf to compile
 

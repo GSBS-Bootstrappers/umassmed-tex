@@ -16,9 +16,98 @@
 %%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Example of use:
+%    \documentclass[letterpaper,oneside,11pt]{book}
+%    \fontsize{11pt}
+%		\usepackage{umassmedthesis}
+%    \begin{document}
+%    \title{How to Write Theses\\
+%            With Two Line Titles}
+%    \author{Jianhong Ou}
+%    \committeechair{Jianhong Ou}
+%    \thesisadvisor{Jianhong Ou}
+%    \firstreader{Jianhong Ou}
+%    \secondreader{Jianhong Ou}
+%    \thirdreader{Jianhong Ou}
+%    \outsidereader{Jianhong Ou\\(Another Department)}
+%		\schooldean{Anthony Carruthers,Ph.D.}
+%		%\tablespagefalse
+%		%\figurespagefalse
+%		%\copyrightfalse
+%		\beforepreface
+%		\include{dedication}
+%		\include{acknowledgments}
+%		\include{abstract}
+%		\afterpreface
+%
+%		\include{introduction}
+%		\include{chapter1}
+%		\include{chapter2}
+%		\include{conclusion}
+%		\envbib{thesis_bibliography}
+%		\end{document}
+%
+% Documentation:
+% TODO: update this a bit
+%    This style file modifies the standard report style to follow the
+%    Graduate School's ``Typing Guidelines for Master's Theses and
+%    Doctoral Dissertations''.
+%    It sets the margins, interline spacing,  the figure
+%    and table numbering style, and disallows page breaks at hyphens.
+%
+%    The \beforepreface command creates the title page, a copyright page
+%    (optionally), and a signature page.  Then the user can put a
+%    dedication, acknowledgments and an abstract using the \prefacesection
+%    command.  The \afterpreface command then produces the tables of
+%    contents, tables and figures, and sets things up to start
+%    the main body (on arabic page 1).
+%
+%    The following commands can control what goes in the front matter
+%    material:
+%
+%        \title{thesis title}
+%        \author{author's name}
+%        \dept{author's department}
+%                - Mathematics and Statistics if omitted
+%        \committeechair{the principal reader's name}
+%        \thesisadvisor{the thesis advisor's name}
+%        \firstreader{the first reader's name}
+%        \secondreader{the second reader's name}
+%        \thirdreader{the third reader's name}
+%        \outsidereader{the outside reader's name}
+%        \schooldean{the dean's name}
+%        \submitdate{month year in which submitted to GPO}
+%                - date LaTeX'd if omitted
+%        \copyrightyear{year degree conferred (next year if submitted in Dec.)}
+%                - year LaTeX'd (or next year, in December) if omitted
+%        \copyrighttrue or \copyrightfalse
+%                - produce or don't produce a copyright page (true by default)
+%        \figurespagetrue or \figurespagefalse
+%                - produce or don't produce a List of Figures page
+%                  (true by default)
+%        \tablespagetrue or \tablespagefalse
+%                - produce or don't produce a List of Tables page
+%                  (true by default)
+%
+% This style uses interline spacing that is 1.7 times normal, except
+% in the figure and table environments where normal spacing is used.
+% That can be changed by doing:
+%    \renewcommand{\baselinestretch}{1.9}
+% (or whatever you want instead of 1.9)
+% Unfortunately, that command probably won't take effect unless it comes
+% before the \begin{document} or after something like \small \normalsize.
+% This has been incorporated into the environments
+%	\beginsinglespace                  \begindoublepage
+% 	.............                       ...........
+%	\endsinglespace                    \enddoublespace
+%
+% The example above shows the 12pt substyle being used.  This seems to give
+% acceptable looking results, but it may be omitted to get smaller print.
+
 
 % for times new roman font
-%\RequirePackage{times}
+% \RequirePackage{times}
 % for latin modern font
 \RequirePackage{lmodern}
 %set the page layout
@@ -159,114 +248,6 @@
 	urlcolor=blue,
 	citecolor=black
 }
-
-%%% For cross-reference figure, table and equation
-%% TODO: (CRM): I don't think any of these commands are actually necessary:
-\newcommand{\eref}[1]{(\ref{#1})}
-\newcommand{\sref}[1]{section~\ref{#1}}
-\newcommand{\fref}[1]{figure~\ref{#1}}
-\newcommand{\tref}[1]{table~\ref{#1}}
-\newcommand{\Eref}[1]{Equation (\ref{#1})}
-\newcommand{\Cref}[1]{Chapter~\ref{#1}}
-\newcommand{\Sref}[1]{Section~\ref{#1}}
-\newcommand{\Fref}[1]{Figure~\ref{#1}}
-\newcommand{\Tref}[1]{Table~\ref{#1}}
-\newcommand{\Aref}[1]{Appendix~\ref{#1}}
-
-
-%% TODO: this should all get moved to a readme or something
-
-%  Example of use:
-%    \documentclass[letterpaper,oneside,11pt]{book}
-%    \fontsize{11pt}
-%		\usepackage{umassmedthesis}
-%    \begin{document}
-%    \title{How to Write Theses\\
-%            With Two Line Titles}
-%    \author{Jianhong Ou}
-%    \committeechair{Jianhong Ou}
-%    \thesisadvisor{Jianhong Ou}
-%    \firstreader{Jianhong Ou}
-%    \secondreader{Jianhong Ou}
-%    \thirdreader{Jianhong Ou}
-%    \outsidereader{Jianhong Ou\\(Another Department)}
-%		\schooldean{Anthony Carruthers,Ph.D.}
-%		%\tablespagefalse
-%		%\figurespagefalse
-%		%\copyrightfalse
-%		\beforepreface
-%		\include{dedication}
-%		\include{acknowledgments}
-%		\include{abstract}
-%		\afterpreface
-%
-%		\include{introduction}
-%		\include{chapter1}
-%		\include{chapter2}
-%		\include{conclusion}
-%		\envbib{thesis_bibliography}
-%		\end{document}
-%
-%Documentation:
-%    This style file modifies the standard report style to follow the
-%    Graduate School's ``Typing Guidelines for Master's Theses and
-%    Doctoral Dissertations''.
-%    It sets the margins, interline spacing,  the figure
-%    and table numbering style, and disallows page breaks at hyphens.
-%
-%    The \beforepreface command creates the title page, a copyright page
-%    (optionally), and a signature page.  Then the user can put a
-%    dedication, acknowledgments and an abstract using the \prefacesection
-%    command.  The \afterpreface command then produces the tables of
-%    contents, tables and figures, and sets things up to start
-%    the main body (on arabic page 1).
-%
-%    The following commands can control what goes in the front matter
-%    material:
-%
-%        \title{thesis title}
-%        \author{author's name}
-%        \dept{author's department}
-%                - Mathematics and Statistics if omitted
-%        \committeechair{the principal reader's name}
-%        \thesisadvisor{the thesis advisor's name}
-%        \firstreader{the first reader's name}
-%        \secondreader{the second reader's name}
-%        \thirdreader{the third reader's name}
-%        \outsidereader{the outside reader's name}
-%        \schooldean{the dean's name}
-%        \submitdate{month year in which submitted to GPO}
-%                - date LaTeX'd if omitted
-%        \copyrightyear{year degree conferred (next year if submitted in Dec.)}
-%                - year LaTeX'd (or next year, in December) if omitted
-%        \copyrighttrue or \copyrightfalse
-%                - produce or don't produce a copyright page (true by default)
-%        \figurespagetrue or \figurespagefalse
-%                - produce or don't produce a List of Figures page
-%                  (true by default)
-%        \tablespagetrue or \tablespagefalse
-%                - produce or don't produce a List of Tables page
-%                  (true by default)
-%
-%This style uses interline spacing that is 1.7 times normal, except
-%in the figure and table environments where normal spacing is used.
-%That can be changed by doing:
-%    \renewcommand{\baselinestretch}{1.9}
-%(or whatever you want instead of 1.9)
-%Unfortunately, that command probably won't take effect unless it comes
-%before the \begin{document} or after something like \small \normalsize.
-%This has been incorporated into the environments
-% \beginsinglespace                  \begindoublepage
-%  .............                       ...........
-% \endsinglespace                    \enddoublespace
-%
-%The example above shows the 12pt substyle being used.  This seems to give
-%acceptable looking results, but it may be omitted to get smaller print.
-
-
-\typeout{         }
-\typeout{Jianhong Ou for UMASSMED PHD THESIS template}
-\typeout{         }
 
 \makeatletter   % Make '@' a letter to allow access to private macros of
                 %   LaTeX and Plain TeX.
@@ -642,10 +623,6 @@
 % After that, we use arabic numerals:
 %
 
-
-
-
-
 %%%%%%%
 % Title page
 \def\titlep{
@@ -700,7 +677,8 @@
 % Signature page
 %	may give a list of warnings on compilation
 %	which are annoying but harmless
-\def\signaturepage{
+% TODO: the signature page or the title page needs to be updated (look at handbook)
+\def\signaturepage{%
 	\thispagestyle{firststyle}
 	\begin{center}
 		{\normalsize\bf\uppercase\expandafter{\@title}}\\
@@ -749,7 +727,7 @@
 }
 
 % This makes the title, copyright, and signature pages.
-\def\beforepreface{
+\def\beforepreface{%
 	\pagenumbering{roman}
 	\thispagestyle{firststyle}
 	\titlep
@@ -761,11 +739,11 @@
 	\signaturepage
 }
 
-\newenvironment{dedication}{
-	\vspace*{80pt}
-	\begin{quotation}
-	}{
-	\par\end{quotation}
+\newenvironment{dedication}{%
+	\vspace*{80pt}%
+	\begin{quotation}%
+	}{%
+	\par\end{quotation}%
 }
 
 % (replaces 'chapter' by 'listintoc'and

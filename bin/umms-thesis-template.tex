@@ -93,6 +93,10 @@ $endfor$
 \makeatother
 
 \begin{document}
+$if(chapter-num)$
+\setcounter{chapter}{$chapter-num$}
+$else$
+
 	%\tablespagefalse
 	%\figurespagefalse
 	\copyrightfalse
@@ -119,6 +123,8 @@ $endfor$
 
 	\afterpreface
 
-	$body$
+$endif$
+
+$body$
 
 \end{document}
