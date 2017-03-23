@@ -5,12 +5,14 @@
 -- LaTeX Character escaping
 -- TODO: add replacement of "..." with ``...''
 local function escape(s, in_attribute)
-	return s:gsub("[\n&]",
+	return s:gsub("[\n&%%]",	-- fyi: %% is an escaped %, since % is a special lua character
 		function(x)
 			if x == '\n' then
 				return '\n%'
 			elseif x == '&' then
 				return [[\&]]
+			elseif x == '%' then
+				return [[\%]]
 			end
 		end)
 end
@@ -105,7 +107,10 @@ end
 function Str(s)
 
 --	TODO: why is this here:
-	return s:gsub(" ", "~")
+	s = s:gsub(" ", "~")
+
+	s = escape(s)
+	return s
 end
 
 function Space()
@@ -121,7 +126,7 @@ function LineBreak()
 end
 
 function Emph(s)
-  return "\\textit{" .. s .. "}"
+  return "\\emph{" .. s .. "}"
 end
 
 function Strong(s)
