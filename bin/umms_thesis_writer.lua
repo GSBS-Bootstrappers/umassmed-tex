@@ -378,7 +378,7 @@ function html_align(align)
 end
 
 function CaptionedImage(src, tit, caption, attr)
-	local esc_caption = escape(caption)
+	-- local esc_caption = escape(caption)
 --	if attr.caption then
 --		if attr.caption == "side" then
 --
@@ -411,9 +411,9 @@ function CaptionedImage(src, tit, caption, attr)
 	if raw_short ~= nil then
 
 		latex_short = pipe("pandoc -f markdown -t latex", raw_short)
-		table.insert(buffer, "\\caption["..latex_short.."]{"..esc_caption.."}%")
+		table.insert(buffer, "\\caption["..latex_short.."]{"..caption.."}%")
 	else
-		table.insert(buffer, "\\caption["..esc_caption.."]{"..esc_caption.."}%")
+		table.insert(buffer, "\\caption["..caption.."]{"..caption.."}%")
 	end
 	if attr.id ~= "" and attr.id ~= nil then
 		table.insert(buffer, "\\label{"..attr.id.."}%")
@@ -580,6 +580,8 @@ function Table(caption, aligns, widths, headers, rows)
 	return table.concat(table_buffer,'\n')
 end
 
+local ref_num = 0
+
 function Div(s, attr)
 	if attr.id == "refs" then
 		local buffer = {}
@@ -593,7 +595,10 @@ function Div(s, attr)
 		return  table.concat(buffer, "\n")
 
 	elseif string.find(attr.id, "ref") == 1 then
-		return "\\hangindent=1.25em \n\\hangafter=1 \n\\hypertarget{" .. attr.id .. "}{}" .. s
+		-- ref_num = ref_num + 1 -- could be used to print the actualy reference number seperatly
+		-- would need to remove the over one...crop string before first space
+		print(ref_num)
+		return ref_num.."\\hangindent=1.25em \n\\hangafter=1 \n\\hypertarget{" .. attr.id .. "}{}" .. s
 	end
 end
 
